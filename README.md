@@ -525,12 +525,17 @@ Nginx logs
 
 # Basic exercise with containers:
 
+
 1. Create a docker container (A) with APACHE, SSL and PHP5
 	- What is the SSL port?
 	- How to redirect SSL port to your assigned port?
 
 2. Create a docker container (B) with MySQL
 3. Create a webpage in web server A that connect to MySQL in container B
+
+Remember: 
+
+* Use your assigned port
 
 
 
