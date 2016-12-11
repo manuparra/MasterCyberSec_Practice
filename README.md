@@ -16,13 +16,13 @@ Docker containers wrap a piece of software in a complete filesystem that contain
 
 Containers and virtual machines have similar resource isolation and allocation benefits, but a different architectural approach allows containers to be more portable and efficient.
 
-**VIRTUAL MACHINES**
+### VIRTUAL MACHINES
 
 Virtual machines include the application, the necessary binaries and libraries, and an **entire guest operating system**,  all of which can amount to tens of GBs.
 
 ![VMsDiff](https://www.docker.com/sites/default/files/WhatIsDocker_2_VMs_0-2_2.png)
 
-**CONTAINERS**
+### CONTAINERS
 
 Containers include the application and all of its dependencies, but **share the kernel with other containers, running as isolated processes in user space on the host operating system**. Docker containers are not tied to any specific infrastructure: they run on any computer, on any infrastructure, and in any cloud.
 
@@ -32,19 +32,19 @@ Containers include the application and all of its dependencies, but **share the 
 
 **Rapid development**
 
-Stop wasting hours setting up developer environments, spinning up new instances, and making copies of production code to run locally. With Docker, you simply take copies of your live environment and run them on any new endpoint running a Docker engine.
+- Stop wasting hours setting up developer environments, spinning up new instances, and making copies of production code to run locally. With Docker, you simply take copies of your live environment and run them on any new endpoint running a Docker engine.
 
 **Work comfortably**
 
-The isolation capabilities of Docker containers free developers from constraints: they can use the best language and tools for their application services without worrying about causing internal tooling conflicts.
+- The isolation capabilities of Docker containers free developers from constraints: they can use the best language and tools for their application services without worrying about causing internal tooling conflicts.
 
 **Forget inconsistences**
 
-Packaging an application in a container with its configs and dependencies guarantees that the application will always work as designed in any environment: locally, on another machine, in test or production. No more worries about having to install the same configurations into different environments.
+- Packaging an application in a container with its configs and dependencies guarantees that the application will always work as designed in any environment: locally, on another machine, in test or production. No more worries about having to install the same configurations into different environments.
 
 **Share your containers**
 
-Store, distribute, and manage Docker images in Docker Hub with your team. Image updates, changes, and history are automatically shared across your organization.
+- Store, distribute, and manage Docker images in Docker Hub with your team. Image updates, changes, and history are automatically shared across your organization.
 
 **Scale**
 
