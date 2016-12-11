@@ -466,8 +466,19 @@ CONTAINER           CPU %               MEM USAGE / LIMIT     MEM %             
 testnginx           0.00%               75.51 MB / 67.32 GB   0.11%               16.53 MB / 393 kB   94.21 kB / 0 B
 ```
 
+## Logs of a container
 
+To view the logs for a container it’s as simple as running just one command:
 
+```
+docker logs testnginx
+```
+
+```
+90.170.152.124 - - [11/Dec/2016:12:03:08 +0000] "GET / HTTP/1.1" 200 612 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36" "-"
+```
+
+Nginx logs
 
 
 
