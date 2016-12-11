@@ -378,42 +378,53 @@ Run a container allows multiple options to improve docker performance:
   -w, --workdir string              Working directory inside the container
 ```
 
+We comment on several of the most relevant options to optimize the operation of the container: cpu-limit, memory-limit, external storage, ...
+
 
 ## Stop a container
 
 You can stop a container using
 
 ```
-#docker stop <nameofcontainer or container ID>
+docker stop <nameofcontainer or container ID>
+```
 
+```
 docker stop testnginx
 ```
+
 
 ## Restarting a container
 
 You can restart a container using:
 
 ```
-#docker restart <nameofcontainer or container ID>
+docker restart <nameofcontainer or container ID>
+```
 
+```
 docker restart testnginx
 ```
 
 ## Deleting a container or shutdown a container
 
-If the lifecycle of your container has  finished and you want remove it:
+If the lifecycle of your container has finished and you want remove it:
 
 ```
-#docker rm <nameofcontainer or container ID>
+docker rm <nameofcontainer or container ID>
+```
 
+```
 docker rm testnginx
 ```
 
 If the container is running, first try ``stop `` and then ``rm``, but if you cant stop it, force remove:
 
 ```
-#docker rm --force <nameofcontainer or container ID>
+docker rm --force <nameofcontainer or container ID>
+```
 
+```
 docker rm --force testnginx
 ```
 
@@ -422,12 +433,14 @@ docker rm --force testnginx
 If you need modify files or add something inside container:
 
 ```
-#docker exec -i -t <nameofcontainer or ID> /bin/bash
+docker exec -i -t <nameofcontainer or ID> /bin/bash
+```
 
+```
 docker exec -i -t testnginx /bin/bash
 ```
 
-It will open a shell (bash) into the container.
+It will open a shell (bash) into the container to manage internal container.
 
 
 ## Upload image to docker::hub
@@ -438,7 +451,7 @@ If you have created a container with an application or service already prepared 
 docker push manuparra/myapp_dockerized
 ```
 
-Previously you must have registered on the dockerhub platform.
+Previously you must have registered on the dockerhub platform .
 
 ## Statistics of a container
 
@@ -448,6 +461,10 @@ Display a live stream of container resource usage statistics. It is very useful 
 docker stats testnginx
 ```
 
+```
+CONTAINER           CPU %               MEM USAGE / LIMIT     MEM %               NET I/O             BLOCK I/O
+testnginx           0.00%               75.51 MB / 67.32 GB   0.11%               16.53 MB / 393 kB   94.21 kB / 0 B
+```
 
 
 
