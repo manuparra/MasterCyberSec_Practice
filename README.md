@@ -199,6 +199,8 @@ Edit the file and change something ``<H1>Hello Manuel Parra</H1>``. Save and clo
 http://docker.ugr.es:<yourport>/
 ```
 
+![dockerchanged](https://sites.google.com/site/manuparra/home/docker_changed_nginx.png)
+
 # Review of docker commands
 
 
