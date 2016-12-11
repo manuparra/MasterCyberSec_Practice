@@ -57,11 +57,271 @@ Containers include the application and all of its dependencies, but **share the 
 
 **Multiplataform**
 
-Docker runs on Windows, Mac and Linux.
+- Docker runs on Windows, Mac and Linux.
 
 
 
-#
+# Starting
+
+Log and connect to our system with:
+
+```
+ssh manuparra@.........es
+```
+
+First of all, check that you have access to the docker system, try this command:
+
+```
+docker run hello-world
+```
+
+And it will return a message where it shows that your installation appears to be working correctly and you are allow use it.
+
+
+# First container
+
+To create a new container in docker, it can be done in two ways: 
+
+- on the one hand by doing it by creating a docker file (link) or 
+
+- by downloading / using a container that is already created by other users.
+
+Containers already created available to be used are stored in a kind of container market at https://hub.docker.com/. Virtually anything you think will already be dockerized. 
+
+But you can also build your own container with everything you need. For example a container having your complete application with all its dependencies, mixing i.e. php, mysql, nginx, etc. on the same container or on different containers.
+
+## A simple web server with NGINX
+
+The first thing we need is to download the docker image from nginx, for them we check whether or not the image is in the list of available images:
+
+```
+docker images
+```
+
+If the image is not found locally, Docker will pull it from Docker Hub and you will use it:
+
+```
+docker pull nginx
+```
+
+It will download the image of nginx container. 
+
+And now you can see if image is on images repository using:
+
+```
+docker images
+```
+
+```
+REPOSITORY                        TAG                 IMAGE ID            CREATED             SIZE
+docker.io/nginx                   latest              abf312888d13        12 days ago         181.5 MB
+...
+```
+
+Run the container, using the next syntax:
+
+```
+docker run -d -p <yourport>:<containerport> --name <mynameofcontainer> <container>
+```
+
+Options:
+
+``-d Run container in background and print container ID``
+
+``-p Publish a container's port(s) to the host``
+
+``--name Name of your contaniner i.e. 'containerofmanuparra'``
+
+``<container> This is the container that will be executed`` 
+
+So, we execute:
+
+```
+docker run -d -p <yourport>:80 --name testnginx nginx
+```
+
+In ``<yourport>`` write your individually assigned port.
+
+To check if your container is runnig and see the status of all your container:
+
+```
+docker ps
+```
+
+And it returns:
+
+```
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                            NAMES
+52ad2efb9fff        nginx               "nginx -g 'daemon off"   12 minutes ago      Up 12 minutes       443/tcp, 0.0.0.0:14000->80/tcp   testnginx
+...
+```
+
+Where ``container ID`` is the unique ID of your Container. You can use Container ID or NAMES to refer to your container. ``IMAGE`` is the name of the container image. ``PORTS`` show what is the correspondence of the ports between server and docker container.
+
+
+And now, go to your browser and write:
+
+```
+http://docker.ugr.es:<yourport>/
+```
+
+![nginxDocker](https://sites.google.com/site/manuparra/home/docker_nginx.png)
+
+### Enter in the nginx container:
+
+```
+docker exec -i -t testnginx /bin/bash
+```
+
+With this command your are inside of the container and you can modify things, for instance change the main website exposed by NGINX:
+
+``
+vim /usr/share/nginx/html/index.html 
+``
+
+ERROR: command ´´vi´´ is not in container. 
+
+***Why***? -> Container has been built with minimal software! ... , so you need to install it:
+
+```
+apt-get install vim
+```
+
+and try again:
+
+``
+vim /usr/share/nginx/html/index.html 
+``
+
+Edit the file and change something ``<H1>Hello Manuel Parra</H1>``. Save and close and try again in your browser: 
+
+```
+http://docker.ugr.es:<yourport>/
+```
+
+# Review of docker commands
+
+
+## Show docker Images
+
+With:
+
+```
+docker images
+```
+
+The default docker images will show all top level images, their repository and tags, and their size, and it will return:
+
+```
+REPOSITORY                        TAG                 IMAGE ID            CREATED             SIZE
+docker.io/tomcat                  latest              c6cfe59eb987        3 weeks ago         356.9 MB
+docker.io/osixia/openldap         1.1.7               7043188ce9b7        4 weeks ago         223 MB
+...
+```
+
+## List of launched/running docker containers:
+
+``docker ps``
+
+Show all docker containers running and details about execution, ports and status.
+
+## Download a image of docker container:
+
+``docker pull``
+
+Download the image container selected. You can go to https://hub.docker.com/ and search for 'dockerized' images from other users.
+
+```
+#docker pull <nameofcontainer>
+
+docker pull jetbrainshost/telegram-bot
+# It will download a telegram bot named: jetbrainshost/telegram-bot
+```
+
+## Run a container
+
+``docker run``
+
+Run a docker image. It allows to assign port in/out, name, external folders, etc. 
+
+```
+#docker run -d -p <yourport>:80 --name <name> <container>
+
+docker run -d -p 8080:80 --name testnginx nginx
+# It will run nginx at 8080 external port ant connect it with internal container port 80. The name of container will be testnginx.
+```
+
+## Stop a container
+
+You can stop a container using
+
+```
+#docker stop <nameofcontainer or container ID>
+
+docker stop testnginx
+```
+
+## Restarting a container
+
+You can restart a container using:
+
+```
+#docker restart <nameofcontainer or container ID>
+
+docker restart testnginx
+```
+
+## Deleting a container or shutdown a container
+
+If the lifecycle of your container has  finished and you want remove it:
+
+```
+#docker rm <nameofcontainer or container ID>
+
+docker rm testnginx
+```
+
+If the container is running, first try ``stop `` and then ``rm``, but if you cant stop it, force remove:
+
+```
+#docker rm --force <nameofcontainer or container ID>
+
+docker rm --force testnginx
+```
+
+## Execute commands inside running container:
+
+If you need modify files or add something inside container:
+
+```
+#docker exec -i -t <nameofcontainer or ID> /bin/bash
+
+docker exec -i -t testnginx /bin/bash
+```
+
+It will open a shell (bash) into the container.
+
+
+## Upload image to docker::hub
+
+If you have created a container with an application or service already prepared you can upload it to the application repository of DockerHub.
+
+```
+docker push manuparra/myapp_dockerized
+```
+
+Previously you must have registered on the dockerhub platform.
+
+## Statistics of a container
+
+Display a live stream of container resource usage statistics. It is very useful to know what is the performance of you services or application deployed with docker.
+
+```
+docker stats testnginx
+```
+
+
+
 
 
 
