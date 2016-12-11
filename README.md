@@ -1,4 +1,35 @@
 # Starting with docker (Primeros pasos con docker)
+
+
+Table of Contents
+=================
+
+   
+   * [What is docker?](#what-is-docker)
+      * [What is the difference between Docker and Virtual Machines?](#what-is-the-difference-between-docker-and-virtual-machines)
+         * [VIRTUAL MACHINES](#virtual-machines)
+         * [CONTAINERS](#containers)
+      * [Advantages of Docker](#advantages-of-docker)
+   * [Starting](#starting)
+   * [First container](#first-container)
+      * [A simple web server with NGINX](#a-simple-web-server-with-nginx)
+         * [Enter in the nginx container:](#enter-in-the-nginx-container)
+         * [Docker ports redirection](#docker-ports-redirection)
+   * [ Review of docker commands](#review-of-docker-commands)
+      * [Show docker Images](#show-docker-images)
+      * [List of launched/running docker containers:](#list-of-launchedrunning-docker-containers)
+      * [Download a image of docker container:](#download-a-image-of-docker-container)
+      * [Run a container](#run-a-container)
+      * [Stop a container](#stop-a-container)
+      * [Restarting a container](#restarting-a-container)
+      * [Deleting a container or shutdown a container](#deleting-a-container-or-shutdown-a-container)
+      * [Execute commands inside running container:](#execute-commands-inside-running-container)
+      * [Upload image to docker::hub](#upload-image-to-dockerhub)
+      * [Statistics of a container](#statistics-of-a-container)
+      * [Logs of a container](#logs-of-a-container)
+   * [Basic exercise with containers:](#basic-exercise-with-containers)
+   * [References and more information](#references-and-more-information)
+
 Master en CiberSeguridad 2016-2017. Universidad de Granada.
 
 Manuel J. Parra Royón & José. M. Benítez Sánchez
@@ -6,6 +37,8 @@ Manuel J. Parra Royón & José. M. Benítez Sánchez
 Soft Computing and Intelligent Information Systems
 
 University of Granada
+
+
 
 
 # What is docker?
@@ -200,6 +233,13 @@ http://docker.ugr.es:<yourport>/
 ```
 
 ![dockerchanged](https://sites.google.com/site/manuparra/home/docker_changed_nginx.png)
+
+### Docker ports redirection
+
+This diagram shows the port equivalence between the docker containers and the server ports. As you can see, the containers can run on the same ports, as they are independent of each other.
+
+![DockerPorts](https://sites.google.com/site/manuparra/home/ports_docker.png)
+
 
 # Review of docker commands
 
@@ -481,6 +521,16 @@ docker logs testnginx
 ```
 
 Nginx logs
+
+
+# Basic exercise with containers:
+
+1. Create a docker container (A) with APACHE, SSL and PHP5
+	- What is the SSL port?
+	- How to redirect SSL port to your assigned port?
+
+2. Create a docker container (B) with MySQL
+3. Create a webpage in web server A that connect to MySQL in container B
 
 
 
