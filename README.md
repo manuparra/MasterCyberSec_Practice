@@ -241,6 +241,14 @@ This diagram shows the port equivalence between the docker containers and the se
 
 ![DockerPorts](https://sites.google.com/site/manuparra/home/ports_docker.png)
 
+In addition each container can export several ports:
+
+
+```
+docker run -d -p 12000:80 -p 12001:81   --name <name> <container>
+```
+
+
 
 # Review of docker commands
 
