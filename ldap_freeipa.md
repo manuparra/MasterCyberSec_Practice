@@ -228,7 +228,6 @@ ldapsearch -x cn=<your user> -b dc=learnitguide,dc=net
 ```
 
 
-
 # Creating a freeIPA service:
 
 We will create a FreeIPA service (integrated security information management solution combining Linux (Fedora), 389 Directory Server, MIT Kerberos, NTP, DNS, Dogtag (Certificate System)). 
@@ -303,7 +302,8 @@ Once inside the container with last command, install the FreeIPA service followi
 10. Create a few users: `ipa user-add manuparra --first=Manuel --last=Parra --password` . Create the home folder for the user created:`mkdir -m0750 -p /home/mparra` and set permissions for the user: `chown XXXXXXXX:XXXXXXXX /home/mparra/` where `XXXXXXXX` is the UID returned by ``ipa user-add manuparra ...``.
 11. (Mandatory) Create home folder for admin user, execute: `mkdir -m0750 -p /home/admin/` 
 12. Execute `ipa user-show admin` and copy UID number. Then execute: `chown XXXXXX:XXXXXX /home/admin` where XXXXXXX is the UID number of admin user. This is mandatory due to in replica server it try to connect with this user and it needs the home be created.
-13. Check if IPA works. Exit of the server and try to connect: `ssh manuparra@192.168.10.220` If it is working, ssh ask to you about change your password and retype it twice. If you can access to the server, IPA server now is Working.
+13. Check if IPA works. Exit of the server and try to connect: `ssh -p <port_ssh_dockercontainer> manuparra@localhost` If it is working, ssh ask to you about change your password and retype it twice. If you can access to the server, IPA server now is Working.
+
 
 
 
