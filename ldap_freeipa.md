@@ -10,7 +10,7 @@ Two containers and a few ports per user.
 
 Connect to **Docker Server** and manage containers.
 
-## Connecting and starting with docker server and docker system:
+# Connecting and starting with docker server and docker system:
 
 First of all read about how to manage docker container [here!](README.md)
 
@@ -28,9 +28,9 @@ We will use two containers for this deployment, one for LDAP server and the seco
 
 Download image CentOS7 container
 
-´´´
+```
 docker pull centos
-´´´
+```
 
 ## Run your docker container with CentOS 7
 
@@ -52,7 +52,7 @@ Connect to your docker:
 docker exec -i -t <containername> /bin/bash
 ```
 
-## Installing
+## Installing SLDAP service
 
 ```
 yum -y install *openldap* migrationtools
@@ -266,10 +266,6 @@ Once inside the container with last command, install the FreeIPA service followi
 11. (Mandatory) Create home folder for admin user, execute: `mkdir -m0750 -p /home/admin/` 
 12. Execute `ipa user-show admin` and copy UID number. Then execute: `chown XXXXXX:XXXXXX /home/admin` where XXXXXXX is the UID number of admin user. This is mandatory due to in replica server it try to connect with this user and it needs the home be created.
 13. Check if IPA works. Exit of the server and try to connect: `ssh manuparra@192.168.10.220` If it is working, ssh ask to you about change your password and retype it twice. If you can access to the server, IPA server now is Working.
-
-
-
-
 
 
 
