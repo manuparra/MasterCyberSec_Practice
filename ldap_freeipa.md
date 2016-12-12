@@ -1,4 +1,34 @@
+
+
 # Environment of the practice
+
+
+Table of Contents
+=================
+
+   * [Connecting and starting with docker server and docker system:](#connecting-and-starting-with-docker-server-and-docker-system)
+   * [Creating a LDAP with TLS/SSL service:](#creating-a-ldap-with-tlsssl-service)
+      * [Downloading CentOS7 base container](#downloading-centos7-base-container)
+      * [Run your docker container with CentOS 7](#run-your-docker-container-with-centos-7)
+      * [Open a bash shell inside the created container:](#open-a-bash-shell-inside-the-created-container)
+      * [Installing SLDAP service](#installing-sldap-service)
+      * [Create a LDAP root passwd for administration purpose.](#create-a-ldap-root-passwd-for-administration-purpose)
+      * [Edit the OpenLDAP Server Configuration](#edit-the-openldap-server-configuration)
+      * [Change monitor privileges](#change-monitor-privileges)
+      * [Check configuration](#check-configuration)
+      * [Enable services](#enable-services)
+      * [Configure Database](#configure-database)
+      * [Add default schemas](#add-default-schemas)
+      * [Create certificates for LDAP](#create-certificates-for-ldap)
+      * [Base](#base)
+      * [Create a simple user:](#create-a-simple-user)
+      * [Test LDAP configuration:](#test-ldap-configuration)
+   * [Creating a freeIPA service:](#creating-a-freeipa-service)
+      * [Downloading CentOS7 base container](#downloading-centos7-base-container-1)
+      * [Run your docker container with CentOS 7](#run-your-docker-container-with-centos-7-1)
+      * [Open a bash shell inside the created container:](#open-a-bash-shell-inside-the-created-container-1)
+      * [Install freeIPA service](#install-freeipa-service)
+
 
 The working environment consists of the following structure for each user:
 
