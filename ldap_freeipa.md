@@ -37,6 +37,7 @@ Table of Contents
       * [Open a bash shell inside the created container:](#open-a-bash-shell-inside-the-created-container-1)
       * [Install freeIPA service](#install-freeipa-service)
 
+# Environment of the practice
 
 The working environment consists of the following structure for each user:
 
@@ -44,11 +45,18 @@ The working environment consists of the following structure for each user:
 
 ![structuredocker](https://sites.google.com/site/manuparra/home/structuredocker.png)
 
-**REMEMBER: Each container could require more than one port**. In this practice you will need open required and specific ports for LDAP and FreeIPA.
+**REMEMBER: Each container could require more than one port**. In this practice you will need to open the required ports for LDAP and FreeIPA.  
 
-To work in this practice is mandatory to connect to **Docker Server** in order to manage containers using SSH
+To work in this practice is mandatory to connect to **Docker Server** in order to manage containers using SSH.
+
+```
+ssh <yourdockeruser>@docker... 
+```
 
 ![dockerserver](https://sites.google.com/site/manuparra/home/dockerserver.png)
+
+
+
 
 
 # Connecting and starting with docker server and docker system:
