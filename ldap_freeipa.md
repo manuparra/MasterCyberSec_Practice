@@ -40,13 +40,16 @@ Table of Contents
 
 The working environment consists of the following structure for each user:
 
+2 containers, 10 TCP ports and 10 UDP ports per user.
+
 ![structuredocker](https://sites.google.com/site/manuparra/home/structuredocker.png)
 
-Two containers and a few ports per user.
+**REMEMBER: Each container could require more than one port**. In this practice you will need open required and specific ports for LDAP and FreeIPA.
+
+To work in this practice is mandatory to connect to **Docker Server** in order to manage containers using SSH
 
 ![dockerserver](https://sites.google.com/site/manuparra/home/dockerserver.png)
 
-Connect to **Docker Server** and manage containers.
 
 # Connecting and starting with docker server and docker system:
 
