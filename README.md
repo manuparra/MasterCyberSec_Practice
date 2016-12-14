@@ -75,7 +75,7 @@ To work in this practice is mandatory to connect to **Docker Server** in order t
 
 ## Infrastructure
 
-The complete  infraestructure for the practice is the next:
+The complete infraestructure for the practice is the next:
 
 ![CompleteStruct](https://sites.google.com/site/manuparra/home/dockerstrcut.jpg)
 
@@ -461,9 +461,10 @@ Use the next *docker.io/eboraas/apache-php*. Remember port redirection to the co
 docker run -p 14001:80 -p 14002:443 --name ContOfManu -d eboraas/apache-php
 ```
 
-Now if you go to SSL web page of the container created: https://docker.ugr.es:14002 
+Now if you go to SSL web page of the container created: ``https://docker.ugr.es:14002``
 
-Go inside your container 
+Go inside your container:
+
 ```
 docker exec -i -t ContOfManu /bin/bash
 ```
@@ -486,7 +487,7 @@ And again (because it produce an good-bye of the container):
 docker exec -i -t ContOfManu /bin/bash
 ```
 
-Now create a file in ``/var/www/html/`` i.e.: ``authentication.php``:
+Now create a file in /var/www/html/ i.e.: authentication.php:
 
 - You must create a simple webpage to authenticate against our LDAP server
 - Remember: 
@@ -531,7 +532,7 @@ LDAP account for root:
    Our example was "cn=Manager,dc=ugr,dc=es"
 
 LDAP root account password: Your-LDAP-root-password
-``
+```
 
 if you make a mistake:
 
