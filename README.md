@@ -88,7 +88,7 @@ As you see, inside docker you will work with multiple Docker containers for Serv
 
 # Connecting and starting with docker server and docker system
 
-First of all read about how to manage docker container [here!](starting_docker.md). It will be used for LDAP and FreeIPA clients.
+First of all read about how to manage docker container [here!](starting_docker.md). It will be used for LDAP and FreeIPA servers and clients.
 
 # Creating a LDAP with TLS/SSL service
 
