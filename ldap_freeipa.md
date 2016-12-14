@@ -47,16 +47,13 @@ The working environment consists of the following structure for each user:
 
 **REMEMBER: Each container could require more than one port**. In this practice you will need to open the required ports for LDAP and FreeIPA.  
 
-To work in this practice is mandatory to connect to **Docker Server** in order to manage containers using SSH.
+To work in this practice is mandatory to connect to **Docker Server** in order to manage containers.
 
 ```
 ssh <yourdockeruser>@docker... 
 ```
 
 ![dockerserver](https://sites.google.com/site/manuparra/home/dockerserver.png)
-
-
-
 
 
 # Connecting and starting with docker server and docker system:
@@ -69,9 +66,10 @@ We will create a LDAP over TLS/SSL (389 Directory Server, MIT Kerberos).
 
 We will use two containers for this deployment, one for LDAP server and the second for clients (and other apps that will connect to LDAP).
 
-- For the first we will use an initial container with CentOS 7 and from which we will install everything necessary to serve LDAP.
+- For the first we will use an initial container with CentOS 7 and from which we will install everything necessary to serve LDAP service.
 
-- In the other container we will use an initial with CentOS 7 and install the LDAP  client and other connection clients from different applications.
+- In the other container we will use an initial with CentOS 7 and install the LDAP client and other clients in order to authenticate from different applications (HTTP, PHP, etc.)
+
 
 ## Downloading CentOS7 base container
 
@@ -84,8 +82,11 @@ docker pull centos
 ## Run your docker container with CentOS 7
 
 ```
-docker run -d -i -t --name <mycontainername> docker.io/centos 
+docker run -d -i -t -p <ports host:docker> --name <mycontainername> docker.io/centos 
 ```
+
+**REMEMBER: You need to use ``docker run`` with `-p` option, i.e.: ``-p 14XXX:389 -p 14XXX:80 ...``**.
+
 
 ## Open a bash shell inside the created container:
 
@@ -98,20 +99,27 @@ docker ps
 Connect to your docker:
 
 ```
-docker exec -i -t <containername> /bin/bash
+docker exec -i -t <mycontainername> /bin/bash
 ```
 
+
 ## Installing SLDAP service
+
+Install OpenLDAP application and services. More info and details: https://www.centos.org/docs/5/html/Deployment_Guide-en-US/s1-ldap-quickstart.html
 
 ```
 yum -y install *openldap* migrationtools
 ```
+
+It will install openldap packages and migrationtool (migrate local users to LDAP).
 
 ## Create a LDAP root passwd for administration purpose.
 
 ```
 slappasswd
 ```
+
+This command will ask you about your LDAP admin password. It will be used for each elevated operation (admin operations).
 
 ## Edit the OpenLDAP Server Configuration
 
@@ -126,16 +134,16 @@ vi olcDatabase={2}hdb.ldif
 Change the variables of "olcSuffix" and "olcRootDN" according to your domain as below.
 
 ```
-olcSuffix: dc=learnitguide,dc=net
-olcRootDN: cn=Manager,dc=learnitguide,dc=net
+olcSuffix: dc=ugr,dc=es
+olcRootDN: cn=Manager,dc=ugr,dc=es
 ```
 
 Add the below three lines additionally in the same configuration file.
 
 ```
 olcRootPW: <PASSWORD STRING GENERATED with slappasswd>
-olcTLSCertificateFile: /etc/pki/tls/certs/learnitguideldap.pem
-olcTLSCertificateKeyFile: /etc/pki/tls/certs/learnitguideldapkey.pem
+olcTLSCertificateFile: /etc/pki/tls/certs/ugr.pem
+olcTLSCertificateKeyFile: /etc/pki/tls/certs/ugrkey.pem
 ```
 
 ## Change monitor privileges
@@ -144,10 +152,10 @@ olcTLSCertificateKeyFile: /etc/pki/tls/certs/learnitguideldapkey.pem
 vi /etc/openldap/slapd.d/cn=config/olcDatabase={1}monitor.ldif
 ```
 
-Go to line starting with `olcAccess`:
+Go to line starting with `olcAccess` and change values with ``cn=Manager,dc=ugr,dc=es``: 
 
 ```
-olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external, cn=auth" read by dn.base="cn=Manager,dc=learnitguide,dc=net" read by * none
+olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external, cn=auth" read by dn.base="cn=Manager,dc=ugr,dc=es" read by * none
 ```
 
 ## Check configuration
