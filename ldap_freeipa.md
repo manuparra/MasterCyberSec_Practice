@@ -41,66 +41,73 @@ Table of Contents
 
 The working environment consists of the following structure for each user:
 
-2 containers, 10 TCP ports and 10 UDP ports per user.
+- 2 Virtual Machines per user:
+   * 1 for  LDAP server
+   * 1 for freeIPA server
+
+- 2 containers, 5 TCP ports and 5 UDP ports per user.
+
+
+## Connecting to Virtual Machines:
+
+1. Log in docker ugr server with your credentials
+2. Connect to your Virtual Machines with ``ssh`` using specific IP assigned to you.
+3. NOTE: Virtual Machine A: for LDAP server and Virtual Machine B: for freeIPA server
+
+![SchemaVM](https://sites.google.com/site/manuparra/home/as.jpg)
+*Diagram of the connection: 1. Log in docker ugr. 2. Log in VMachine.*
+
+
+## Connecting to Docker Containers:
+
+Docker system will be used in this practice to deploy LDAP and freeIPA clients. That is, installing applications that connect to LDAP and FreeIPA.
 
 ![structuredocker](https://sites.google.com/site/manuparra/home/structuredocker.png)
 
-**REMEMBER: Each container could require more than one port**. In this practice you will need to open the required ports for LDAP and FreeIPA.  
+**REMEMBER: Each container could require more than one port**.  
 
-To work in this practice is mandatory to connect to **Docker Server** in order to manage containers.
+To work in this practice is mandatory to connect to **Docker Server** in order to manage **Virtual Machines** and **containers**.
 
-```
-ssh <yourdockeruser>@docker... 
-```
+## Provided infraestructure 
 
-![dockerserver](https://sites.google.com/site/manuparra/home/dockerserver.png)
+The complete structure of the infraestructure for the practice is the next:
+
+![CompleteStruct](https://sites.google.com/site/manuparra/home/dockervm.jpg)
+
+As you see, inside docker you will work with Virtual Machines for Services LDAP and FreeIPA, and by the other hand with Docker Containers for applications that connect to FreeIPA in different ways.
+
 
 
 # Connecting and starting with docker server and docker system:
 
-First of all read about how to manage docker container [here!](README.md)
+First of all read about how to manage docker container [here!](README.md). It will be used for LDAP and FreeIPA clients.
 
 # Creating a LDAP with TLS/SSL service:
 
 We will create a LDAP over TLS/SSL (389 Directory Server, MIT Kerberos).
 
-We will use two containers for this deployment, one for LDAP server and the second for clients (and other apps that will connect to LDAP).
+We will use one Virtual Machine for this deployment. Virtual Machine for LDAP server and docker containers for clients (and other apps that will connect to LDAP).
 
-- For the first we will use an initial container with CentOS 7 and from which we will install everything necessary to serve LDAP service.
+- For the first we will use an Virtual Machine with CentOS 7 and from which we will install everything necessary to serve LDAP service.
 
-- In the other container we will use an initial with CentOS 7 and install the LDAP client and other clients in order to authenticate from different applications (HTTP, PHP, etc.)
+- Then using a docker container we will use an initial with CentOS 7 (or https/php container) and install the LDAP client and other clients in order to authenticate from different applications (HTTP, PHP, etc.)
 
 
-## Downloading CentOS7 base container
+## Connecting to your Virtual Machine
 
-Download image CentOS7 container
-
-```
-docker pull centos
-```
-
-## Run your docker container with CentOS 7
+First connect to docker ugr server
 
 ```
-docker run -d -i -t -p <ports host:docker> --name <mycontainername> docker.io/centos 
+ssh myuser@docker...
 ```
 
-**REMEMBER: You need to use ``docker run`` with `-p` option, i.e.: ``-p 14XXX:389 -p 14XXX:80 ...``**.
-
-
-## Open a bash shell inside the created container:
-
-First, show the running containers:
+Then connect to your first Virtual Machine for LDAP service
 
 ```
-docker ps
+ssh root@192.168.10.XXX
 ```
 
-Connect to your docker:
-
-```
-docker exec -i -t <mycontainername> /bin/bash
-```
+NOTE: XXX is your assigned IP for LDAP.
 
 
 ## Installing SLDAP service
@@ -119,7 +126,12 @@ It will install openldap packages and migrationtool (migrate local users to LDAP
 slappasswd
 ```
 
+
 This command will ask you about your LDAP admin password. It will be used for each elevated operation (admin operations).
+
+
+Copy the hashed password returned by last command.
+
 
 ## Edit the OpenLDAP Server Configuration
 
@@ -131,7 +143,7 @@ cd /etc/openldap/slapd.d/cn=config
 vi olcDatabase={2}hdb.ldif
 ```
 
-Change the variables of "olcSuffix" and "olcRootDN" according to your domain as below.
+Change the variables of "olcSuffix" and "olcRootDN" according to our domain as below.
 
 ```
 olcSuffix: dc=ugr,dc=es
@@ -145,6 +157,8 @@ olcRootPW: <PASSWORD STRING GENERATED with slappasswd>
 olcTLSCertificateFile: /etc/pki/tls/certs/ugr.pem
 olcTLSCertificateKeyFile: /etc/pki/tls/certs/ugrkey.pem
 ```
+
+NOTE: ``<PASSWORD STRING GENERATED with slappasswd>`` must be the hashed password.
 
 ## Change monitor privileges
 
@@ -163,6 +177,8 @@ olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external, 
 ```
 slaptest -u
 ```
+
+NOTE: Don't mind warnings
 
 ## Enable services
 
@@ -193,6 +209,8 @@ openssl req -new -x509 -nodes -out /etc/pki/tls/certs/learnitguideldap.pem -keyo
 ```
 Provide your details to generate the certificate.
 
+Common name will be: ugr.es
+
 ## Base 
 
 ```
@@ -203,47 +221,47 @@ touch /root/base.ldif
 and add:
 
 ```
-dn: dc=learnitguide,dc=net
+dn: dc=ugr,dc=es
 objectClass: top
 objectClass: dcObject
 objectclass: organization
-o: learnitguide net
-dc: learnitguide
+o: ugr es
+dc: ugr
 
-dn: cn=Manager,dc=learnitguide,dc=net
+dn: cn=Manager,dc=ugr,dc=es
 objectClass: organizationalRole
 cn: Manager
 description: Directory Manager
 
-dn: ou=People,dc=learnitguide,dc=net
+dn: ou=People,dc=ugr,dc=es
 objectClass: organizationalUnit
 ou: People
 
-dn: ou=Group,dc=learnitguide,dc=net
+dn: ou=Group,dc=ugr,dc=es
 objectClass: organizationalUnit
 ou: Group
 ```
 
-and:
+and then execute:
 
 
 ```
-ldapadd -x -W -D "cn=Manager,dc=learnitguide,dc=net" -f /root/base.ldif
+ldapadd -x -W -D "cn=Manager,dc=ugr,dc=es" -f /root/base.ldif
 ```
 
 
-## Create a simple user:
+## Create a simple user or migrate local user:
 
 `users.ldif` -> fill data from https://github.com/manuparra/docker_ldap#training-with-ldap
 
 ```
-ldapadd -x -W -D "cn=Manager,dc=learnitguide,dc=net" -f /root/users.ldif
+ldapadd -x -W -D "cn=Manager,dc=ugr,dc=es" -f /root/users.ldif
 ```
 
 ## Test LDAP configuration:
 
 ```
-ldapsearch -x cn=<your user> -b dc=learnitguide,dc=net
+ldapsearch -x cn=<your user> -b dc=ugr,dc=es
 ```
 
 
