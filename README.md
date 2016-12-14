@@ -251,17 +251,7 @@ you should select this option and 'allow bind_v2' will be added to your slapd.co
 Allow LDAPv2 protocol? [yes/no] no 
 
 ```
-### Change monitor privileges
 
-```
-vi /etc/openldap/slapd.d/cn=config/olcDatabase={1}monitor.ldif
-```
-
-Go to line starting with `olcAccess` and change values with ``cn=Manager,dc=ugr,dc=es``: 
-
-```
-olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external, cn=auth" read by dn.base="cn=Manager,dc=ugr,dc=es" read by * none
-```
 
 ### Check configuration
 
@@ -281,7 +271,14 @@ Provide your details to generate the certificate.
 
 Common name will be: ugr.es
 
-### Base 
+### Creating Base Directory and schema
+
+This is the tree that will be use:
+
+![ldaptree](https://sites.google.com/site/manuparra/home/tree.jpg)
+
+To do this:
+
 
 ```
 touch /root/base.ldif
