@@ -531,7 +531,7 @@ LDAP account for root:
    Our example was "cn=Manager,dc=ugr,dc=es"
 
 LDAP root account password: Your-LDAP-root-password
-``
+```
 
 if you make a mistake:
 
