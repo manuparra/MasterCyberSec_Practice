@@ -9,32 +9,38 @@ Distributed Computational Intelligence and Time Series Lab
 
 University of Granada
 
-
 Table of Contents
 =================
-
-   * [Connecting and starting with docker server and docker system:](#connecting-and-starting-with-docker-server-and-docker-system)
-   * [Creating a LDAP with TLS/SSL service:](#creating-a-ldap-with-tlsssl-service)
-      * [Downloading CentOS7 base container](#downloading-centos7-base-container)
-      * [Run your docker container with CentOS 7](#run-your-docker-container-with-centos-7)
-      * [Open a bash shell inside the created container:](#open-a-bash-shell-inside-the-created-container)
+   
+   * [Environment of the practice](#environment-of-the-practice)
+      * [Connecting to Virtual Machines](#connecting-to-virtual-machines)
+      * [Connecting to Docker Containers](#connecting-to-docker-containers)
+      * [Provided infraestructure](#provided-infraestructure)
+   * [Connecting and starting with docker server, Virtual Machines and docker system](#connecting-and-starting-with-docker-server-virtual-machines-and-docker-system)
+   * [Creating a LDAP with TLS/SSL service](#creating-a-ldap-with-tlsssl-service)
+      * [Connecting to your Virtual Machine](#connecting-to-your-virtual-machine)
       * [Installing SLDAP service](#installing-sldap-service)
-      * [Create a LDAP root passwd for administration purpose.](#create-a-ldap-root-passwd-for-administration-purpose)
-      * [Edit the OpenLDAP Server Configuration](#edit-the-openldap-server-configuration)
-      * [Change monitor privileges](#change-monitor-privileges)
-      * [Check configuration](#check-configuration)
-      * [Enable services](#enable-services)
-      * [Configure Database](#configure-database)
-      * [Add default schemas](#add-default-schemas)
-      * [Create certificates for LDAP](#create-certificates-for-ldap)
-      * [Base](#base)
-      * [Create a simple user:](#create-a-simple-user)
+         * [Create a LDAP root passwd for administration purpose.](#create-a-ldap-root-passwd-for-administration-purpose)
+         * [Edit the OpenLDAP Server Configuration](#edit-the-openldap-server-configuration)
+         * [Change monitor privileges](#change-monitor-privileges)
+         * [Check configuration](#check-configuration)
+         * [Enable services](#enable-services)
+         * [Configure Database](#configure-database)
+         * [Add default schemas](#add-default-schemas)
+         * [Create certificates for LDAP](#create-certificates-for-ldap)
+         * [Base](#base)
+         * [Create a simple user or migrate local user:](#create-a-simple-user-or-migrate-local-user)
+         * [Creating from local users (migrating)](#creating-from-local-users-migrating)
+         * [Creating manually](#creating-manually)
       * [Test LDAP configuration:](#test-ldap-configuration)
-   * [Creating a freeIPA service:](#creating-a-freeipa-service)
-      * [Downloading CentOS7 base container](#downloading-centos7-base-container-1)
-      * [Run your docker container with CentOS 7](#run-your-docker-container-with-centos-7-1)
-      * [Open a bash shell inside the created container:](#open-a-bash-shell-inside-the-created-container-1)
+      * [Installing clients for LDAP](#installing-clients-for-ldap)
+         * [Authentication with with PHP on HTTPS/SSL](#authentication-with-with-php-on-httpsssl)
+         * [Authentication on LDAP server with with SSH](#authentication-on-ldap-server-with-with-ssh)
+   * [Creating a freeIPA service](#creating-a-freeipa-service)
+      * [Connecting to your Virtual Machine](#connecting-to-your-virtual-machine-1)
       * [Install freeIPA service](#install-freeipa-service)
+      * [Installing clients](#installing-clients)
+
 
 # Environment of the practice
 
@@ -497,9 +503,6 @@ Exit from the container and try log in with ssh:
 ssh -p <PORTcontainer> LDAP_user@localhost
 ```
 
-
-
-
 # Creating a freeIPA service
 
 We will create a FreeIPA service (integrated security information management solution combining Linux (Fedora), 389 Directory Server, MIT Kerberos, NTP, DNS, Dogtag (Certificate System)). 
@@ -532,7 +535,7 @@ NOTE: XXX is your assigned IP for LDAP.
 
 
 
-##  Install freeIPA service
+## Install freeIPA service
 
 Follow the next instructions (+info: https://github.com/manuparra/freeipa):
 
