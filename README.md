@@ -73,9 +73,9 @@ Everything running on docker containers.
 
 To work in this practice is mandatory to connect to **Docker Server** in order to manage  **containers**.
 
-## Provided infraestructure 
+## Infrastructure
 
-The complete structure of the infraestructure for the practice is the next:
+The complete  infraestructure for the practice is the next:
 
 ![CompleteStruct](https://sites.google.com/site/manuparra/home/dockerstrcut.jpg)
 
@@ -531,7 +531,7 @@ LDAP account for root:
    Our example was "cn=Manager,dc=ugr,dc=es"
 
 LDAP root account password: Your-LDAP-root-password
-```
+``
 
 if you make a mistake:
 
