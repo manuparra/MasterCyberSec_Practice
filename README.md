@@ -46,44 +46,45 @@ Table of Contents
 
 The working environment consists of the following structure for each user:
 
-- 2 Virtual Machines per user:
-   * 1 for  LDAP server
+- 2 Containers per user + 5 TCP ports and 5 UDP ports per user:
+   * 1 for LDAP server
    * 1 for freeIPA server
 
-- 2 containers, 5 TCP ports and 5 UDP ports per user.
+- 2 containers + 5 TCP ports and 5 UDP ports per user for LDAP and freeIPA Clients.
 
 
-## Connecting to Virtual Machines
+## Connecting to Docker Server UGR
 
-1. Log in docker ugr server with your credentials
-2. Connect to your Virtual Machines with ``ssh`` using specific IP assigned to you.
-3. NOTE: Virtual Machine A: for LDAP server and Virtual Machine B: for freeIPA server
+Log in docker ugr server with your credentials
 
-![SchemaVM](https://sites.google.com/site/manuparra/home/as.jpg)
-*Diagram of the connection: 1. Log in docker ugr. 2. Log in VMachine.*
-
+```
+ssh manuparra@docker...
+```
 
 ## Connecting to Docker Containers
 
-Docker system will be used in this practice to deploy LDAP and freeIPA clients. That is, installing applications that connect to LDAP and FreeIPA.
+Docker system will be used in this practice to deploy LDAP and freeIPA server and clients. That is, installing applications that serve and connect to LDAP and FreeIPA.
 
-![structuredocker](https://sites.google.com/site/manuparra/home/structuredocker.png)
+Everything running on docker containers.
+
+![structuredocker](https://sites.google.com/site/manuparra/home/docker_freeipa.png)
 
 **REMEMBER: Each container could require more than one port**.  
 
-To work in this practice is mandatory to connect to **Docker Server** in order to manage **Virtual Machines** and **containers**.
+To work in this practice is mandatory to connect to **Docker Server** in order to manage  **containers**.
 
 ## Provided infraestructure 
 
 The complete structure of the infraestructure for the practice is the next:
 
-![CompleteStruct](https://sites.google.com/site/manuparra/home/dockervm.jpg)
+![CompleteStruct](https://sites.google.com/site/manuparra/home/dockerstrcut.jpg)
 
-As you see, inside docker you will work with Virtual Machines for Services LDAP and FreeIPA, and by the other hand with Docker Containers for applications that connect to FreeIPA in different ways.
+As you see, inside docker you will work with multiple Docker containers for Services LDAP and FreeIPA, and by the other hand with Docker Containers for applications that connect to FreeIPA in different ways.
+
+*IMPORTANT*: Ports assignment
 
 
-
-# Connecting and starting with docker server, Virtual Machines and docker system
+# Connecting and starting with docker server and docker system
 
 First of all read about how to manage docker container [here!](README.md). It will be used for LDAP and FreeIPA clients.
 
@@ -91,80 +92,163 @@ First of all read about how to manage docker container [here!](README.md). It wi
 
 We will create a LDAP over TLS/SSL (389 Directory Server, MIT Kerberos).
 
-We will use one Virtual Machine for this deployment. Virtual Machine for LDAP server and docker containers for clients (and other apps that will connect to LDAP).
+We will use one docker container for this deployment following the next:
 
-- For the first we will use an Virtual Machine with CentOS 7 and from which we will install everything necessary to serve LDAP service.
+- For the first we will use an docker container with UbuntuServer minimal and from which we will install everything necessary to serve LDAP service.
 
 - Then using a docker container we will use an initial with CentOS 7 (or https/php container) and install the LDAP client and other clients in order to authenticate from different applications (HTTP, PHP, etc.)
 
 
-## Connecting to your Virtual Machine
+## Create a container:
 
-First connect to docker ugr server
-
-```
-ssh myuser@docker...
-```
-
-Then connect to your first Virtual Machine for LDAP service
+Connect to docker ugr server:
 
 ```
-ssh root@192.168.10.XXX
+ssh manuparra@docker...
 ```
 
-NOTE: XXX is your assigned IP for LDAP.
+Create a container with Ubuntu
+
+
+```
+docker pull ubuntu
+```
+
+Run the docker container with ubuntu image:
+
+```
+docker run -d -i -t --name <nameofcontainer> docker.io/ubuntu:16.04
+```
+
+Check if container is running (check column ``NAMES``)
+
+```
+docker ps
+```
+
+
+## Connect to the container
+
+Connect to your created docker <nameofcontainer>:
+
+```
+docker exec -i -t <containername> /bin/bash
+```
+
+It will provide of access to the container.
+
+
+## Important notes:
+
+You must to call to `docker run` with `-p` option in order to redirect ports for LDAP:  
+
+- 389 TCP
+- 636 TCP
+
+So, delete your last container and re-run with this parameters:
+
+`-p 14XXX:389 -p 14XXX:636`
+
+It will redirect from outside of the container: 
+
+- from external 14XXX to 389 internal (container).
+- from external 14XXX to 636 internal (container).
 
 
 ## Installing SLDAP service
 
-Install OpenLDAP application and services. More info and details: https://www.centos.org/docs/5/html/Deployment_Guide-en-US/s1-ldap-quickstart.html
+Install OpenLDAP application and services. 
+
+More info and details: https://www.centos.org/docs/5/html/Deployment_Guide-en-US/s1-ldap-quickstart.html 
 
 ```
-yum -y install *openldap* migrationtools
+apt-get update
+```
+
+After this, execute:
+
+
+```
+apt-get install slapd ldap-utils migrationtools
 ```
 
 It will install openldap packages and migrationtool (migrate local users to LDAP).
 
-### Create a LDAP root passwd for administration purpose.
-
-```
-slappasswd
-```
+**NOTE:Installation ask you about admin password, write a admin password.**
 
 
-This command will ask you about your LDAP admin password. It will be used for each elevated operation (admin operations).
-
-
-Copy the hashed password returned by last command.
 
 
 ### Edit the OpenLDAP Server Configuration
 
-```
-cd /etc/openldap/slapd.d/cn=config
-```
+Once configured, the first thing to do is to enable systemclt and services execution (privileged):
+
 
 ```
-vi olcDatabase={2}hdb.ldif
+vim /usr/sbin/policy-rc.d
 ```
 
-Change the variables of "olcSuffix" and "olcRootDN" according to our domain as below.
+or 
 
 ```
-olcSuffix: dc=ugr,dc=es
-olcRootDN: cn=Manager,dc=ugr,dc=es
+nano /usr/sbin/policy-rc.d
 ```
 
-Add the below three lines additionally in the same configuration file.
+and change ``101`` by ``0``.
+
+Then start this command to configure the Directory parameters
 
 ```
-olcRootPW: <PASSWORD STRING GENERATED with slappasswd>
-olcTLSCertificateFile: /etc/pki/tls/certs/ugr.pem
-olcTLSCertificateKeyFile: /etc/pki/tls/certs/ugrkey.pem
+dpkg-reconfigure slapd
 ```
 
-NOTE: ``<PASSWORD STRING GENERATED with slappasswd>`` must be the hashed password.
 
+This ask you the next:
+
+```
+Configuring slapd
+-----------------
+
+If you enable this option, no initial configuration or database will be created for you.
+
+Omit OpenLDAP server configuration? [yes/no] no
+
+The DNS domain name is used to construct the base DN of the LDAP directory. For example, 'foo.example.org' will create the directory with 'dc=foo,
+dc=example, dc=org' as base DN.
+
+DNS domain name: ugr.es
+
+Please enter the name of the organization to use in the base DN of your LDAP directory.
+
+Organization name: ugr
+
+Please enter the password for the admin entry in your LDAP directory.
+
+Administrator password: <youradminpassword>
+
+HDB and BDB use similar storage formats, but HDB adds support for subtree renames. Both support the same configuration options.
+
+The MDB backend is recommended. MDB uses a new storage format and requires less configuration than BDB or HDB.
+
+In any case, you should review the resulting database configuration for your needs. See /usr/share/doc/slapd/README.Debian.gz for more details.
+
+  1. BDB  2. HDB  3. MDB
+Database backend to use: 2
+
+
+Do you want the database to be removed when slapd is purged? [yes/no] no
+
+There are still files in /var/lib/ldap which will probably break the configuration process. If you enable this option, the maintainer scripts will move the
+old database files out of the way before creating a new database.
+
+Move old database? [yes/no] yes
+
+The obsolete LDAPv2 protocol is disabled by default in slapd. Programs and users should upgrade to LDAPv3.  If you have old programs which can't use LDAPv3,
+you should select this option and 'allow bind_v2' will be added to your slapd.conf file.
+
+Allow LDAPv2 protocol? [yes/no] no 
+
+```
 ### Change monitor privileges
 
 ```
@@ -185,34 +269,11 @@ slaptest -u
 
 NOTE: Don't mind warnings
 
-### Enable services
-
-```
-systemctl start slapd
-systemctl enable slapd
-```
-
-### Configure Database
-
-```
-cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG
-chown -R ldap:ldap /var/lib/ldap/
-```
-
-### Add default schemas
-
-Those schemas are required:
-
-```
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/cosine.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/nis.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/inetorgperson.ldif
-```
 
 ### Create certificates for LDAP
 
 ```
-openssl req -new -x509 -nodes -out /etc/pki/tls/certs/learnitguideldap.pem -keyout /etc/pki/tls/certs/learnitguideldapkey.pem -days 365
+openssl req -new -x509 -nodes -out /etc/pki/tls/certs/ugr.pem -keyout /etc/pki/tls/certs/ugrkey.pem -days 365
 ```
 Provide your details to generate the certificate.
 
@@ -228,13 +289,6 @@ touch /root/base.ldif
 and add:
 
 ```
-dn: dc=ugr,dc=es
-objectClass: top
-objectClass: dcObject
-objectclass: organization
-o: ugr es
-dc: ugr
-
 dn: cn=Manager,dc=ugr,dc=es
 objectClass: organizationalRole
 cn: Manager
@@ -253,14 +307,13 @@ and then execute:
 
 
 ```
-ldapadd -x -W -D "cn=Manager,dc=ugr,dc=es" -f /root/base.ldif
+ldapadd -x -W -D "cn=admin,dc=ugr,dc=es" -f /root/base.ldif
 ```
 
 This command will add OU=People, OU=Group, etc.
 
 
 ### Create a simple user or migrate local user:
-
 
 
 ### Creating from local users (migrating)
@@ -286,9 +339,8 @@ grep ":10[0-9][0-9]" /etc/group > /root/group
 Now, edit migration tools: 
 
 ```
-cd /usr/share/migrationtools/
+cd /etc/migrationtools/
 ```
-
 
 ```
 vi migrate_common.ph
@@ -311,6 +363,10 @@ LINE 90: $EXTENDED_SCHEMA = 0;
 Execute migration tool:
 
 ```
+cd /usr/share/migrationtools
+```
+
+```
 ./migrate_passwd.pl /root/passwd /root/users.ldif
 ```
 
@@ -318,16 +374,16 @@ Execute migration tool:
 ./migrate_group.pl /root/group /root/groups.ldif
 ```
 
-Import users:
+Import users from local:
 
 ```
-ldapadd -x -W -D "cn=Manager,dc=ugr,dc=es" -f /root/users.ldif
+ldapadd -x -W -D "cn=admin,dc=ugr,dc=es" -f /root/users.ldif
 ```
 
-Import groups:
+Import groups from local:
 
 ```
-ldapadd -x -W -D "cn=Manager,dc=ugr,dc=es" -f /root/groups.ldif
+ldapadd -x -W -D "cn=admin,dc=ugr,dc=es" -f /root/groups.ldif
 ```
 
 
@@ -336,10 +392,10 @@ ldapadd -x -W -D "cn=Manager,dc=ugr,dc=es" -f /root/groups.ldif
 `users.ldif` -> fill data from out last tutorial: https://github.com/manuparra/docker_ldap#training-with-ldap
 
 ```
-ldapadd -x -W -D "cn=Manager,dc=ugr,dc=es" -f /root/users.ldif
+ldapadd -x -W -D "cn=admin,dc=ugr,dc=es" -f /root/users.ldif
 ```
 
-For instance:
+For example:
 
 ```
 dn: uid=myuser,ou=People,dc=ugr,dc=es
@@ -367,7 +423,7 @@ homeDirectory: /home/myuser
 NOTE: Remember change user password with LDAP.
 
 
-## Test LDAP configuration:
+### Test LDAP configuration:
 
 ```
 ldapsearch -x cn=<your user> -b dc=ugr,dc=es
@@ -377,6 +433,14 @@ ldapsearch -x cn=<your user> -b dc=ugr,dc=es
 ldapsearch -x cn=myuser -b dc=ugr,dc=es
 ```
 
+## Create a pair of users for testing:
+
+Create a pair of user following this rule:
+
+- Your ID (xYYYYYYYL)
+- Your login
+
+Change password using ``ldappasswd`` or migrating users from local (it will take your user account password)
 
 
 ## Installing clients for LDAP
@@ -503,6 +567,20 @@ Exit from the container and try log in with ssh:
 ssh -p <PORTcontainer> LDAP_user@localhost
 ```
 
+### Installing PHPLDAPMYADMIN
+
+phpLDAPadmin is a web-based LDAP client. It provides easy, anywhere-accessible, multi-language administration for your LDAP server.
+Its hierarchical tree-viewer and advanced search functionality make it intuitive to browse and administer your LDAP directory. Since it is a web application, this LDAP browser works on many platforms, making your LDAP server easily manageable from any location.
+
+It can be installed into a container in different ways:
+
+1 With a specific container with phpLDAPadmin:
+   - Remember that you must to redirect ports (-p option), and you can use your browser (``http://docker.ugr.es:14XXX/``) and you can manage it.
+   - This is: https://github.com/osixia/docker-phpLDAPadmin
+
+2 With a container with apache, php and MySQL and install phpLDAPadmin from the scratch.
+
+
 # Creating a freeIPA service
 
 We will create a FreeIPA service (integrated security information management solution combining Linux (Fedora), 389 Directory Server, MIT Kerberos, NTP, DNS, Dogtag (Certificate System)). 
@@ -510,43 +588,73 @@ We will create a FreeIPA service (integrated security information management sol
 
 ![FreeIPA_docker](https://sites.google.com/site/manuparra/home/docker_freeipa.png)
 
-We will use another virtual machine for this deployment, one VM for freeIPA and the a docker container for clients (and other apps that will connect to FreeIPA).
+We will use a docker container for this deployment, one container for freeIPA and the another docker container for clients (and other apps that will connect to FreeIPA).
 
-- For the first we will use an Virtual Machine with CentOS 7 and from which we will install everything necessary to serve freeIPA.
+- For the first we will use an docker container with Ubuntu or CentOS 7 and from which we will install everything necessary to serve freeIPA.
 
-- In the container we will use an initial with CentOS 7 or other container and install the FreeIPA client and other connection clients from different applications.
+- In the container we will use Ubuntu or CentOS 7 or other container and install the FreeIPA client and other connection clients from different applications.
 
 
-## Connecting to your Virtual Machine
+## Create a container:
 
-First connect to docker ugr server
-
-```
-ssh myuser@docker...
-```
-
-Then connect to your first Virtual Machine for LDAP service
+Connect to docker ugr server:
 
 ```
-ssh root@192.168.10.XXX
+ssh manuparra@docker...
 ```
 
-NOTE: XXX is your assigned IP for LDAP.
+Create a container with Ubuntu or centos /
+
+
+```
+docker pull ubuntu
+docker pull centos
+```
+
+Run the docker container with ubuntu image:
+
+```
+docker run -d -i -t --name <nameofcontainer> docker.io/ubuntu:16.04
+```
+
+or
+
+```
+docker run -d -i -t --name <nameofcontainer> centos
+```
+
+
+Check if container is running (check column ``NAMES``)
+
+```
+docker ps
+```
+
+
+## Connect to the container
+
+Connect to your created docker <nameofcontainer>:
+
+```
+docker exec -i -t <containername> /bin/bash
+```
+
+It will provide of access to the container.
 
 
 
 ## Install freeIPA service
 
-Follow the next instructions (+info: https://github.com/manuparra/freeipa):
+Follow the next instructions  for CentOS7 (+info: https://github.com/manuparra/freeipa):
 
 1. First of all, execute command: 
-`yum -y update`
+`yum -y update` 
 2. Set the name of the IPA Server: 
 `hostnamectl set-hostname ipa.centos.local` or `vi /etc/hostname` and add ipa.centos.local
 3. Edit `/etc/hosts` and add: 
 `<ContainerIP> ipa.centos.local ipa`
 4. Download and install freeIPA packages with: 
-`yum install ipa-server bind-dyndb-ldap ipa-server-dns`
+`yum install ipa-server bind-dyndb-ldap ipa-server-dns` 
 5. Install and set freeIPA services: 
 `ipa-server-install --setup-dns`
 6. Follow the steps of previous item : [here!](https://github.com/manuparra/FreeIPA/blob/master/questions.txt)
