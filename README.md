@@ -512,7 +512,7 @@ apt-get install libpam-ldap nscd
 
 And follow the next questions:
 
-```
+````
 LDAP server Uniform Resource Identifier: ldap://LDAP-server-IP-Address
 
 Change the initial string from "ldapi:///" to "ldap://" before inputing your server's information
@@ -534,7 +534,7 @@ LDAP account for root:
    Our example was "cn=Manager,dc=ugr,dc=es"
 
 LDAP root account password: Your-LDAP-root-password
-``
+````
 
 if you make a mistake:
 
