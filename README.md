@@ -99,7 +99,7 @@ We will use one docker container for this deployment following the next:
 - Then using a docker container we will use an initial with CentOS 7 (or https/php container) and install the LDAP client and other clients in order to authenticate from different applications (HTTP, PHP, etc.)
 
 
-## Create a container:
+## Create a container
 
 Connect to docker ugr server:
 
@@ -138,7 +138,7 @@ docker exec -i -t <containername> /bin/bash
 It will provide of access to the container.
 
 
-## Important notes:
+## Important notes
 
 You must to call to `docker run` with `-p` option in order to redirect ports for LDAP:  
 
@@ -423,7 +423,7 @@ homeDirectory: /home/myuser
 NOTE: Remember change user password with LDAP.
 
 
-### Test LDAP configuration:
+### Test LDAP configuration
 
 ```
 ldapsearch -x cn=<your user> -b dc=ugr,dc=es
@@ -433,7 +433,7 @@ ldapsearch -x cn=<your user> -b dc=ugr,dc=es
 ldapsearch -x cn=myuser -b dc=ugr,dc=es
 ```
 
-## Create a pair of users for testing:
+## Create a pair of users for testing
 
 Create a pair of user following this rule:
 
@@ -596,7 +596,7 @@ We will use a docker container for this deployment, one container for freeIPA an
 - In the container we will use Ubuntu or CentOS 7 or other container and install the FreeIPA client and other connection clients from different applications.
 
 
-## Create a container:
+## Create a container
 
 Connect to docker ugr server:
 
