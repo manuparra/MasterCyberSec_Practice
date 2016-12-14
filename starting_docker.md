@@ -239,7 +239,7 @@ http://docker.ugr.es:<yourport>/
 
 This diagram shows the port equivalence between the docker containers and the server ports. As you can see, the containers can run on the same ports, as they are independent of each other.
 
-![DockerPorts](https://sites.google.com/site/manuparra/home/ports_docker.png)
+![DockerPorts](https://sites.google.com/site/manuparra/home/portasig.jpg)
 
 In addition each container can export several ports:
 
