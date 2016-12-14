@@ -9,38 +9,40 @@ Distributed Computational Intelligence and Time Series Lab
 
 University of Granada
 
+
 Table of Contents
 =================
-   
+
+
    * [Environment of the practice](#environment-of-the-practice)
-      * [Connecting to Virtual Machines](#connecting-to-virtual-machines)
+      * [Connecting to Docker Server UGR](#connecting-to-docker-server-ugr)
       * [Connecting to Docker Containers](#connecting-to-docker-containers)
-      * [Provided infraestructure](#provided-infraestructure)
-   * [Connecting and starting with docker server, Virtual Machines and docker system](#connecting-and-starting-with-docker-server-virtual-machines-and-docker-system)
+      * [Infrastructure](#infrastructure)
+   * [Connecting and starting with docker server and docker system](#connecting-and-starting-with-docker-server-and-docker-system)
    * [Creating a LDAP with TLS/SSL service](#creating-a-ldap-with-tlsssl-service)
-      * [Connecting to your Virtual Machine](#connecting-to-your-virtual-machine)
+      * [Create a container](#create-a-container)
+      * [Connect to the container](#connect-to-the-container)
+      * [Important notes](#important-notes)
       * [Installing SLDAP service](#installing-sldap-service)
-         * [Create a LDAP root passwd for administration purpose.](#create-a-ldap-root-passwd-for-administration-purpose)
          * [Edit the OpenLDAP Server Configuration](#edit-the-openldap-server-configuration)
          * [Change monitor privileges](#change-monitor-privileges)
          * [Check configuration](#check-configuration)
-         * [Enable services](#enable-services)
-         * [Configure Database](#configure-database)
-         * [Add default schemas](#add-default-schemas)
          * [Create certificates for LDAP](#create-certificates-for-ldap)
          * [Base](#base)
          * [Create a simple user or migrate local user:](#create-a-simple-user-or-migrate-local-user)
          * [Creating from local users (migrating)](#creating-from-local-users-migrating)
          * [Creating manually](#creating-manually)
-      * [Test LDAP configuration:](#test-ldap-configuration)
+         * [Test LDAP configuration](#test-ldap-configuration)
+      * [Create a pair of users for testing](#create-a-pair-of-users-for-testing)
       * [Installing clients for LDAP](#installing-clients-for-ldap)
          * [Authentication with with PHP on HTTPS/SSL](#authentication-with-with-php-on-httpsssl)
          * [Authentication on LDAP server with with SSH](#authentication-on-ldap-server-with-with-ssh)
+         * [Installing PHPLDAPMYADMIN](#installing-phpldapmyadmin)
    * [Creating a freeIPA service](#creating-a-freeipa-service)
-      * [Connecting to your Virtual Machine](#connecting-to-your-virtual-machine-1)
+      * [Create a container](#create-a-container-1)
+      * [Connect to the container](#connect-to-the-container-1)
       * [Install freeIPA service](#install-freeipa-service)
       * [Installing clients](#installing-clients)
-
 
 # Environment of the practice
 
@@ -532,7 +534,7 @@ LDAP account for root:
    Our example was "cn=Manager,dc=ugr,dc=es"
 
 LDAP root account password: Your-LDAP-root-password
-```
+``
 
 if you make a mistake:
 
