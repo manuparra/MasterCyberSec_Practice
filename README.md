@@ -376,18 +376,27 @@ If you include some attribute and this attribute is not defined in any of the ``
 
 ### Creating LDAP users from local users (migration tools)
 
+We can create an local user:
+
 ```
 useradd myuser
 
 ```
 
+add the password:
+
+
 ```
 passwd myuser
 ```
 
+Copy created user to ``/root/passwd``:
+
 ```
 grep ":10[0-9][0-9]" /etc/passwd > /root/passwd
 ```
+
+Copy created groups to ``/root/group``:
 
 
 ```
@@ -400,9 +409,12 @@ Now, edit migration tools:
 cd /etc/migrationtools/
 ```
 
+In this file, we create a template for LDAP user with out Base schema
+
 ```
 vi migrate_common.ph
 ```
+
 
 Change to our ldap domain:
 
@@ -617,7 +629,6 @@ ldapsearch -x cn=myuser -b dc=ugr,dc=es
 
 
 
-
 # Installing and configuring clients for LDAP
 
 For this part will be necessary to use the docker containers. So, you must to use in this case docker container (Not virtual machines).
@@ -632,11 +643,19 @@ You will need a docker image with SSL, APACHE and PHP:
 
 Use the next *docker.io/eboraas/apache-php*. Remember port redirection to the container:
 
+
+```
+docker run -p 14XXX:80 -p 14XXX:443 --name <yourcontainername> -d eboraas/apache-php
+```
+
+
 ```
 docker run -p 14001:80 -p 14002:443 --name ContOfManu -d eboraas/apache-php
 ```
 
-Now if you go to SSL web page of the container created: ``https://docker.ugr.es:14002``
+Now if you go to SSL web page of the container created: ``https://docker.ugr.es:14002``, it's working !.
+
+
 
 Go inside your container:
 
