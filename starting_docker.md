@@ -1,12 +1,12 @@
 # Starting with docker (Primeros pasos con docker)
 
-Master en CiberSeguridad 2016-2017. Universidad de Granada.
+![LogoHeadMasterCES](https://sites.google.com/site/manuparra/home/logo_master_ciber.png)
 
-Manuel J. Parra Royón & José. M. Benítez Sánchez
 
-Soft Computing and Intelligent Information Systems
+[UGR](http://www.ugr.es) | [DICITS](http://dicits.ugr.es) | [SCI2S](http://sci2s.ugr.es) | [DECSAI](http://decsai.ugr.es)
 
-University of Granada
+Manuel J. Parra Royón (manuelparra@decsai.ugr.es) & José. M. Benítez Sánchez (j.m.benitez@decsai.ugr.es)
+
 
 
 Table of Contents

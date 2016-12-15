@@ -1,13 +1,9 @@
+![LogoHeadMasterCES](https://sites.google.com/site/manuparra/home/logo_master_ciber.png)
 
-Máster en CiberSeguridad 2016-2017. Universidad de Granada.
+
+[UGR](http://www.ugr.es) | [DICITS](http://dicits.ugr.es) | [SCI2S](http://sci2s.ugr.es) | [DECSAI](http://decsai.ugr.es)
 
 Manuel J. Parra Royón (manuelparra@decsai.ugr.es) & José. M. Benítez Sánchez (j.m.benitez@decsai.ugr.es)
-
-Soft Computing and Intelligent Information Systems
-
-Distributed Computational Intelligence and Time Series Lab
-
-University of Granada
 
 
 Table of Contents
