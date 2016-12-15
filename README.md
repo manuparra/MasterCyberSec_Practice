@@ -10,30 +10,32 @@ Table of Contents
 =================
 
 
-   * [Environment of the practice](#environment-of-the-practice)
+   * [1. Environment of the practice](#environment-of-the-practice)
       * [Connecting to Docker Server UGR](#connecting-to-docker-server-ugr)
       * [Connecting to Docker Containers](#connecting-to-docker-containers)
       * [Infrastructure](#infrastructure)
-   * [Connecting and starting with docker server and docker system](#connecting-and-starting-with-docker-server-and-docker-system)
-   * [Creating a LDAP with TLS/SSL service](#creating-a-ldap-with-tlsssl-service)
+      * [Connecting and starting with docker server and docker system](#connecting-and-starting-with-docker-server-and-docker-system)
+   * [2. Creating a LDAP with TLS/SSL service](#creating-a-ldap-with-tlsssl-service)
       * [Create a container](#create-a-container)
       * [Connect to the container](#connect-to-the-container)
       * [Important notes](#important-notes)
       * [Installing SLDAP service](#installing-sldap-service)
          * [Edit the OpenLDAP Server Configuration](#edit-the-openldap-server-configuration)
-         * [Change monitor privileges](#change-monitor-privileges)
          * [Check configuration](#check-configuration)
-         * [Create certificates for LDAP](#create-certificates-for-ldap)
-         * [Base](#base)
-         * [Create a simple user or migrate local user:](#create-a-simple-user-or-migrate-local-user)
-         * [Creating from local users (migrating)](#creating-from-local-users-migrating)
-         * [Creating manually](#creating-manually)
-         * [Test LDAP configuration](#test-ldap-configuration)
-      * [Create a pair of users for testing](#create-a-pair-of-users-for-testing)
-      * [Installing clients for LDAP](#installing-clients-for-ldap)
-         * [Authentication with with PHP on HTTPS/SSL](#authentication-with-with-php-on-httpsssl)         
-         * [Installing PHPLDAPMYADMIN](#installing-phpldapmyadmin)
-   * [Creating a freeIPA service](#creating-a-freeipa-service)
+         * [Creating certificates for LDAP](#creating-certificates-for-ldap)
+         * [Creating Base Directory and schema](#creating-base-directory-and-schema)
+      * [LDAP User Management](#ldap-user-management)
+         * [Understanding properties and objectClass of a user in LDAP](#understanding-properties-and-objectclass-of-a-user-in-ldap)
+         * [Creating LDAP users from local users (migration tools)](#creating-ldap-users-from-local-users-migration-tools)
+         * [Creating users manually from a .ldif file](#creating-users-manually-from-a-ldif-file)
+         * [Changing password LDAP user](#changing-password-ldap-user)
+         * [Modifying LDAP user account data: DELETE, MODIFY.](#modifying-ldap-user-account-data-delete-modify)
+      * [Testing LDAP configuration](#testing-ldap-configuration)
+   * [3. Installing clients for LDAP](#installing-clients-for-ldap)
+      * [Authentication with with PHP on HTTPS/SSL](#authentication-with-with-php-on-httpsssl)
+      * [Installing PHPLDAPMYADMIN](#installing-phpldapmyadmin)
+   * [5. Working with OpenNebula](#working-with-opennebula)
+   * [6. Creating a freeIPA service](#creating-a-freeipa-service)
       * [Create a container](#create-a-container-1)
       * [Connect to the container](#connect-to-the-container-1)
       * [Install freeIPA service](#install-freeipa-service)
@@ -81,7 +83,7 @@ As you see, inside docker you will work with multiple Docker containers for Serv
 *IMPORTANT*: Ports assignment
 
 
-# Connecting and starting with docker server and docker system
+## Connecting and starting with docker server and docker system
 
 First of all read about how to manage docker container [here!](starting_docker.md). It will be used for LDAP and FreeIPA servers and clients.
 
@@ -257,7 +259,7 @@ slaptest -u
 NOTE: Don't mind warnings
 
 
-### Create certificates for LDAP
+### Creating certificates for LDAP
 
 ```
 openssl req -new -x509 -nodes -out /etc/pki/tls/certs/ugr.pem -keyout /etc/pki/tls/certs/ugrkey.pem -days 365
@@ -307,10 +309,72 @@ ldapadd -x -W -D "cn=admin,dc=ugr,dc=es" -f /root/base.ldif
 This command will add OU=People, OU=Group, etc.
 
 
-### Create a simple user or migrate local user:
+## LDAP User Management 
 
 
-### Creating from local users (migrating)
+
+
+### Understanding properties and objectClass of a user in LDAP
+
+If when we create a user from a ldif file we indicate as attributes of the user registry:
+
+```
+...
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+...
+```
+
+
+With this example we will be defining that the user ``myuser`` is part of the class of objects:
+
+``person, organizationalPerson, inetOrgPerson, posixAccount, top, shadowAccount``
+
+So you have all the properties of the specified classes associated. Each objectClass adds multiple properties and characteristics to the new register entry ``myuser``.
+
+For example ``posixAccount`` will provide (https://tools.ietf.org/html/rfc4519):
+
+```
+uidNumber 
+gidNumber
+homeDirectory 
+...
+```
+
+For example ``shadowAccount`` will provide (https://tools.ietf.org/html/rfc4519) :
+
+```
+...
+shadowLastChange
+shadowExpire
+shadowFlag
+...
+```
+
+For example ``inetOrgPerson`` attributes: https://tools.ietf.org/html/rfc2798 :
+
+```
+...
+description
+givenName
+departmentNumber
+title
+telephoneNumber
+jpegPhoto
+...
+certificates+
+...
+```
+
+If you include some attribute and this attribute is not defined in any of the ``objectClass``, the insertion, modification and deletion will show error.
+
+
+
+### Creating LDAP users from local users (migration tools)
 
 ```
 useradd myuser
@@ -381,15 +445,14 @@ ldapadd -x -W -D "cn=admin,dc=ugr,dc=es" -f /root/groups.ldif
 ```
 
 
-### Creating manually
+### Creating users manually from a `.ldif` file
 
-`users.ldif` -> fill data from out last tutorial: https://github.com/manuparra/docker_ldap#training-with-ldap
 
 ```
 ldapadd -x -W -D "cn=admin,dc=ugr,dc=es" -f /root/users.ldif
 ```
 
-For example:
+For example file ``users.ldif`` :
 
 ```
 dn: uid=myuser,ou=People,dc=ugr,dc=es
@@ -414,10 +477,135 @@ gidNumber: 1000
 homeDirectory: /home/myuser
 ```
 
-NOTE: Remember change user password with LDAP.
+
+### Changing password LDAP user
+
+```
+ldappasswd -s <new_user_password> -W -D "cn=admin,dc=ugr,dc=es" -x "cn=mparra,ou=Users,dc=ugr,dc=es"
+```
+
+In this case, using -W option, ``ldappasswd`` ask for LDAP admin password.
+
+Syntax:
+
+```
+ldappasswd [ options ] [ user ]
+```
+
+Please check: https://www.centos.org/docs/5/html/CDS/cli/8.0/Configuration_Command_File_Reference-Command_Line_Utilities-ldappasswd.html for more information about this command.
+
+Now, try out:
+
+```
+ldapsearch -H ldap://localhost -LL -b ou=Users,dc=ugr,dc=es -x
+```
+
+It returns LDAP directory with the last user added.
 
 
-### Test LDAP configuration
+### Modifying LDAP user account data: DELETE, MODIFY.
+
+The syntax of the ldapmodify tool on the command-line can take any of these forms:
+
+```
+ldapmodify [ options ]
+
+ldapmodify [ options ] < LDIFfile
+
+ldapmodify [ options ] -f LDIFfile
+```
+
+LDIF text file containing new entries or updates to existing entries on LDAP directory.
+
+When modifying the contents of a directory, you must satisfy several prerequisite conditions. 
+
+First, the bind DN and password used for authentication must have the appropriate permissions for the operations being performed.
+
+Create an example LDIF Modify and save the file as i.e. ``mparra_modify.ldif``
+
+```
+dn: cn=mparra,ou=Users,dc=ugr,dc=es
+changetype: modify
+replace: loginShell
+loginShell: /bin/csh
+```
+
+Then execute:
+
+```
+ldapmodify -x -D "cn=admin,dc=ugr,dc=es" -w password -H ldap:// -f mparra_modify.ldif
+```
+
+It will update ``cn=mparra`` with a new ``loginShell``, in this case ``/bin/csh``
+
+Check if the change has been done:
+
+```
+...
+dn: cn=mparra,ou=Users,dc=ugr,dc=es
+objectClass: top
+objectClass: account
+objectClass: posixAccount
+objectClass: shadowAccount
+cn: mparra
+uid: mparra
+uidNumber: 16859
+gidNumber: 100
+homeDirectory: /home/mparra
+gecos: mparra
+shadowMax: 0
+shadowWarning: 0
+loginShell: /bin/csh
+...
+
+```
+
+Adding a entry of LDAP user. Create a new file ``manu_add_descrip.ldif`` and add: 
+
+```
+dn: cn=mparra,ou=Users,dc=ugr,dc=es
+changetype: modify
+add: description
+description: Manuel Parra
+```
+
+Execute next command:
+
+```
+ldapmodify -x -D "cn=admin,dc=ugr,dc=es" -w password -H ldap:// -f manu_add_descrip.ldif
+```
+
+Now, check changes:
+
+
+```
+ldapsearch -H ldap://localhost -LL -b ou=Users,dc=ugr,dc=es -x
+```
+
+And finally delete description. Create a new file i.e. ``manu_del_descr.ldif``
+
+```
+dn: cn=mparra,ou=Users,dc=ugr,dc=es
+changetype: modify
+delete: description
+``` 
+
+Then execute: 
+
+```
+ldapmodify -x -D "cn=admin,dc=ugr,dc=es" -w password -H ldap:// -f manu_del_descr.ldif
+```
+
+Now, check out:
+
+```
+ldapsearch -H ldap://localhost -LL -b ou=Users,dc=ugr,dc=es -x
+```
+
+Verify if entity description is not set.
+
+
+## Testing LDAP configuration
 
 ```
 ldapsearch -x cn=<your user> -b dc=ugr,dc=es
@@ -427,23 +615,16 @@ ldapsearch -x cn=<your user> -b dc=ugr,dc=es
 ldapsearch -x cn=myuser -b dc=ugr,dc=es
 ```
 
-## Create a pair of users for testing
-
-Create a pair of user following this rule:
-
-- Your ID (xYYYYYYYL)
-- Your login
-
-Change password using ``ldappasswd`` or migrating users from local (it will take your user account password)
 
 
-## Installing clients for LDAP
+
+# Installing and configuring clients for LDAP
 
 For this part will be necessary to use the docker containers. So, you must to use in this case docker container (Not virtual machines).
 
 You must to use one or two containers in which the ldap clients will be installed, to validate that the installation of the SLDAP service is correct.
 
-### Authentication with with PHP on HTTPS/SSL
+## Authentication with with PHP on HTTPS/SSL
 
 **NOTE: ALL IN YOUR CONTAINER**
 
@@ -489,8 +670,41 @@ Now create a file in /var/www/html/ i.e.: authentication.php:
    - And you Admin Password to do LDAP BIND
 
 
+Copy the next piece of code and test it (customize with your specific values for your LDAP server):
 
-### Installing PHPLDAPMYADMIN
+
+```
+<?php
+
+// example of authentication
+$ldaprdn  = 'username';     // ldap rdn or dn
+$ldappass = 'password';  // associated password
+
+// Connecting to your Server
+$ldapconn = ldap_connect("ldap.example.com")
+    or die("Could not connect to LDAP server.");
+
+if ($ldapconn) {
+
+    // realizando la autenticación
+    $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
+
+    // verificación del enlace
+    if ($ldapbind) {
+        echo "LDAP bind successful...";
+    } else {
+        echo "LDAP bind failed...";
+    }
+
+}
+
+?>
+```
+
+
+
+
+## Installing PHPLDAPMYADMIN
 
 phpLDAPadmin is a web-based LDAP client. It provides easy, anywhere-accessible, multi-language administration for your LDAP server.
 Its hierarchical tree-viewer and advanced search functionality make it intuitive to browse and administer your LDAP directory. Since it is a web application, this LDAP browser works on many platforms, making your LDAP server easily manageable from any location.
@@ -502,6 +716,12 @@ It can be installed into a container in different ways:
    - This is: https://github.com/osixia/docker-phpLDAPadmin
 
 2 With a container with apache, php and MySQL and install phpLDAPadmin from the scratch.
+
+
+
+# Working with OpenNebula
+
+Read our manual about OpenNebula [here](starting_OpenNebula.md), to learn how to work with Virtual Machines within the OpenNebula environment.
 
 
 # Creating a freeIPA service
