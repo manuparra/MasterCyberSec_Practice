@@ -311,7 +311,9 @@ This command will add OU=People, OU=Group, etc.
 
 ## LDAP User Management 
 
+LDAP Data Interchange Format explanation:
 
+![schemas_explained](https://sites.google.com/site/manuparra/home/schemas_explained.png)
 
 
 ### Understanding properties and objectClass of a user in LDAP
