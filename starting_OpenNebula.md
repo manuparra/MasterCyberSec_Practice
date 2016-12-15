@@ -318,9 +318,9 @@ ping -c2 google.com
 
 Go to: http://docker.ugr.es:9869/ and follow the next steps:
 
-1 Connect to docker server ugr: ``ssh manuparra@.....``
-2 Execute: ``cat .one/one_auth`` it will show your SunStone credentials in this format: ``<user>:<password>`` , for example: ``manuparra:7374j31g74hd7234``
-3 Copy the corresponding part of password and paste http://docker.ugr.es:9869/ login and password.
+- Connect to docker server ugr: ``ssh manuparra@.....``
+- Execute: ``cat .one/one_auth`` it will show your SunStone credentials in this format: ``<user>:<password>`` , for example: ``manuparra:7374j31g74hd7234``
+- Copy the corresponding part of password and paste http://docker.ugr.es:9869/ login and password.
 
 
 
