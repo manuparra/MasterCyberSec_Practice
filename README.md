@@ -34,7 +34,7 @@ Table of Contents
    * [3. Installing clients for LDAP](#installing-clients-for-ldap)
       * [Authentication with with PHP on HTTPS/SSL](#authentication-with-with-php-on-httpsssl)
       * [Installing PHPLDAPMYADMIN](#installing-phpldapmyadmin)
-      * [Authentication with SSH/PAM](#authentication-on-ldap-server-with-with-ssh-and-pam)
+      * [Authentication with SSH/PAM](#authentication-on-ldap-server-with-ssh-and-pam)
    * [5. Working with OpenNebula](#working-with-opennebula)
    * [6. Creating a freeIPA service](#creating-a-freeipa-service)
       * [Create a container](#create-a-container-1)
