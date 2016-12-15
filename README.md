@@ -34,6 +34,7 @@ Table of Contents
    * [3. Installing clients for LDAP](#installing-clients-for-ldap)
       * [Authentication with with PHP on HTTPS/SSL](#authentication-with-with-php-on-httpsssl)
       * [Installing PHPLDAPMYADMIN](#installing-phpldapmyadmin)
+      * [Authentication with SSH/PAM](#authentication-on-ldap-server-with-with-ssh-and-pam)
    * [5. Working with OpenNebula](#working-with-opennebula)
    * [6. Creating a freeIPA service](#creating-a-freeipa-service)
       * [Create a container](#create-a-container-1)
@@ -774,6 +775,80 @@ It can be installed into a container in different ways:
    - This is: https://github.com/osixia/docker-phpLDAPadmin
 
 2 With a container with apache, php and MySQL and install phpLDAPadmin from the scratch.
+
+
+## Authentication on LDAP server with SSH and PAM
+
+**NOTE: ALL IN YOUR CONTAINER**
+
+Create another docker container with ubuntu (follow the steps to create on docker):
+
+Install client packages:
+
+```
+apt-get update
+apt-get install libpam-ldap nscd
+```
+
+And follow the next questions:
+
+````
+LDAP server Uniform Resource Identifier: ldap://LDAP-server-IP-Address
+
+Change the initial string from "ldapi:///" to "ldap://" before inputing your server's information
+Distinguished name of the search base:
+
+   This should match the value you put in your LDAP service
+   
+   Our example was "dc=ugr,dc=es"
+
+LDAP version to use: 3
+
+Make local root Database admin: Yes
+
+Does the LDAP database require login? No
+
+LDAP account for root:
+
+   This should also match the value in your LDAP SERVER
+   Our example was "cn=Manager,dc=ugr,dc=es"
+
+LDAP root account password: Your-LDAP-root-password
+````
+
+if you make a mistake:
+
+```
+sudo dpkg-reconfigure ldap-auth-config
+```
+
+Edit ``/etc/nsswitch.conf``
+
+```
+passwd:         ldap compat
+group:          ldap compat
+shadow:         ldap compat
+```
+
+Edit ``/etc/pam.d/common-session``
+
+Add to the bottom:
+
+```
+session required    pam_mkhomedir.so skel=/etc/skel umask=0022
+```
+
+And then:
+
+```
+/etc/init.d/nscd restart
+```
+
+Exit from the container and try log in with ssh:
+
+```
+ssh -p <PORTcontainer> LDAP_user@localhost
+```
 
 
 # Working with OpenNebula
