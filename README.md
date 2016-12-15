@@ -774,7 +774,6 @@ It can be installed into a container in different ways:
 2 With a container with apache, php and MySQL and install phpLDAPadmin from the scratch.
 
 
-
 # Working with OpenNebula
 
 Read our manual about OpenNebula [here](starting_OpenNebula.md), to learn how to work with Virtual Machines within the OpenNebula environment.
