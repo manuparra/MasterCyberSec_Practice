@@ -98,7 +98,7 @@ onevm list
 
 It is normal to appear empty since we have not yet launched any virtual machine. We will create it later.
 
-## onehost
+### onehost
 
 Allows you to manage the hosts and resources of the cloud created with OpenNebula
 
