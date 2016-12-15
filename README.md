@@ -720,6 +720,43 @@ if ($ldapconn) {
 ?>
 ```
 
+or 
+
+```
+<?php
+
+        //LDAP USER LOGIN DATA
+        $user="myuser";
+        $password="mypassword";
+
+        //LDAP SETUP CONFIGURATION 
+        $host= 'yourhost';         
+        $port= 389; //LDAP port // SSL: 698
+        $dn="ou=admin,dc=ugr,dc=es"; //change your DN
+        $pwd="keypass"; // your admin password
+
+        $conn = ldap_connect( "ldap://".$host,389) ;
+
+
+        ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
+        
+        //Matching DN admin and password
+        $bind = ldap_bind( $conn, $dn, $pwd);
+
+        if ($bind){
+
+            $newbind = ldap_bind( $conn, "uid=".$user.",ou=Users,dc=ugr,dc=es", $password );
+            if ($newbind) {
+               echo "USER: ".$user." Authenticated";
+            }
+            else {
+               echo "USER: ".$user." NOT Authenticated";  
+            }
+        }
+
+?>
+```
+
 
 
 
