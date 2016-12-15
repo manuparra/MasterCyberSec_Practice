@@ -2,8 +2,8 @@
 
 Manuel J. Parra Royón (manuelparra@decsai.ugr.es) & José. M. Benítez Sánchez (j.m.benitez@decsai.ugr.es)
 
-[UGR!](http://www.ugr.es) 
-[DICITS!](http://dicits.ugr.es) | [SCI2S!](http://sci2s.ugr.es)Soft Computing and Intelligent Information Systems | [DECSAI!](http://decsai.ugr.es) 
+[UGR](http://www.ugr.es) 
+[DICITS](http://dicits.ugr.es) | [SCI2S](http://sci2s.ugr.es) | [DECSAI](http://decsai.ugr.es)
 
 
 Table of Contents
