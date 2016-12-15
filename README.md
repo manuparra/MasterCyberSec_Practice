@@ -31,8 +31,7 @@ Table of Contents
          * [Test LDAP configuration](#test-ldap-configuration)
       * [Create a pair of users for testing](#create-a-pair-of-users-for-testing)
       * [Installing clients for LDAP](#installing-clients-for-ldap)
-         * [Authentication with with PHP on HTTPS/SSL](#authentication-with-with-php-on-httpsssl)
-         * [Authentication on LDAP server with with SSH](#authentication-on-ldap-server-with-with-ssh)
+         * [Authentication with with PHP on HTTPS/SSL](#authentication-with-with-php-on-httpsssl)         
          * [Installing PHPLDAPMYADMIN](#installing-phpldapmyadmin)
    * [Creating a freeIPA service](#creating-a-freeipa-service)
       * [Create a container](#create-a-container-1)
@@ -490,78 +489,6 @@ Now create a file in /var/www/html/ i.e.: authentication.php:
    - And you Admin Password to do LDAP BIND
 
 
-### Authentication on LDAP server with with SSH
-
-**NOTE: ALL IN YOUR CONTAINER**
-
-Create another docker container with ubuntu (follow the steps to create on docker):
-
-Install client packages:
-
-```
-apt-get update
-apt-get install libpam-ldap nscd
-```
-
-And follow the next questions:
-
-````
-LDAP server Uniform Resource Identifier: ldap://LDAP-server-IP-Address
-
-Change the initial string from "ldapi:///" to "ldap://" before inputing your server's information
-Distinguished name of the search base:
-
-   This should match the value you put in your LDAP service
-   
-   Our example was "dc=ugr,dc=es"
-
-LDAP version to use: 3
-
-Make local root Database admin: Yes
-
-Does the LDAP database require login? No
-
-LDAP account for root:
-
-   This should also match the value in your LDAP SERVER
-   Our example was "cn=Manager,dc=ugr,dc=es"
-
-LDAP root account password: Your-LDAP-root-password
-````
-
-if you make a mistake:
-
-```
-sudo dpkg-reconfigure ldap-auth-config
-```
-
-Edit ``/etc/nsswitch.conf``
-
-```
-passwd:         ldap compat
-group:          ldap compat
-shadow:         ldap compat
-```
-
-Edit ``/etc/pam.d/common-session``
-
-Add to the bottom:
-
-```
-session required    pam_mkhomedir.so skel=/etc/skel umask=0022
-```
-
-And then:
-
-```
-/etc/init.d/nscd restart
-```
-
-Exit from the container and try log in with ssh:
-
-```
-ssh -p <PORTcontainer> LDAP_user@localhost
-```
 
 ### Installing PHPLDAPMYADMIN
 
