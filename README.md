@@ -720,7 +720,7 @@ Copy the next piece of code or download full example below, and test it (customi
         $dn="cn=admin,dc=ugr,dc=es"; //change your DN
         $pwd_admin="password"; // your admin password
 
-        $conn = ldap_connect( "ldap://".$host,14XXX) ;
+        $conn = ldap_connect( "ldap://".$host,$port) ;
 
 
         ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);        
