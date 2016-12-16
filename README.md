@@ -687,10 +687,10 @@ apt-get install php5-ldap
 And reboot APACHE:
 
 ```
-apachectl2 restart
+apachectl restart
 ```
 
-And again (because it produce an good-bye of the container): 
+And again (because it produce good-bye of the container): 
 
 ```
 docker exec -i -t ContOfManu /bin/bash
