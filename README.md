@@ -262,8 +262,16 @@ NOTE: Don't mind warnings
 
 ### Creating certificates for LDAP
 
+Create a folder to store the certificates:
+
 ```
-openssl req -new -x509 -nodes -out /etc/pki/tls/certs/ugr.pem -keyout /etc/pki/tls/certs/ugrkey.pem -days 365
+mkdir /etc/pki/
+```
+
+And execute (don't forget install openssl):
+
+```
+openssl req -new -x509 -nodes -out /etc/pki/ugr.pem -keyout /etc/pki/ugrkey.pem -days 365
 ```
 Provide your details to generate the certificate.
 
