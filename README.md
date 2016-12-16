@@ -755,13 +755,13 @@ File with the full example: [authentication.php](extras/authentication.php). Cop
 phpLDAPadmin is a web-based LDAP client. It provides easy, anywhere-accessible, multi-language administration for your LDAP server.
 Its hierarchical tree-viewer and advanced search functionality make it intuitive to browse and administer your LDAP directory. Since it is a web application, this LDAP browser works on many platforms, making your LDAP server easily manageable from any location.
 
-It can be installed into a container in different ways:
+It can be installed into a container from multiple ways:
 
 1 With a specific container with phpLDAPadmin:
    - Remember that you must to redirect ports (-p option), and you can use your browser (``http://docker.ugr.es:14XXX/``) and you can manage it.
    - This is: https://github.com/osixia/docker-phpLDAPadmin
 
-2 With a container with apache, php and MySQL and install phpLDAPadmin from the scratch.
+2 With a container installing ``apache``, ``php``, and install ``phpLDAPadmin`` from the scratch. (Use our phpLDAPadmin fork https://github.com/manuparra/phpLDAPadmin that it solves a problem with the original ``phpLDAPadmin``).
 
 
 ## Authentication on LDAP server with SSH and PAM
