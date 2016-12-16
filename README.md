@@ -700,77 +700,50 @@ Now create a file in /var/www/html/ i.e.: authentication.php:
 
 - You must create a simple webpage to authenticate against our LDAP server
 - Remember: 
-   - Your LDAP IP server 
+   - Your LDAP IP server ( Docker Base System: IP 192.168.10.30 )
    - And you Admin Password to do LDAP BIND
 
 
-Copy the next piece of code and test it (customize with your specific values for your LDAP server):
+Copy the next piece of code or download full example below, and test it (customize with your specific values for your LDAP server):
 
 
 ```
 <?php
+        
+         //LDAP USER LOGIN DATA
+        $user="user";
+        $password="password";
 
-// example of authentication
-$ldaprdn  = 'username';     // ldap rdn or dn
-$ldappass = 'password';  // associated password
-
-// Connecting to your Server
-$ldapconn = ldap_connect("ldap.example.com")
-    or die("Could not connect to LDAP server.");
-
-if ($ldapconn) {
-
-    // realizando la autenticación
-    $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
-
-    // verificación del enlace
-    if ($ldapbind) {
-        echo "LDAP bind successful...";
-    } else {
-        echo "LDAP bind failed...";
-    }
-
-}
-
-?>
-```
-
-or 
-
-```
-<?php
-
-        //LDAP USER LOGIN DATA
-        $user="myuser";
-        $password="mypassword";
-
-        //LDAP SETUP CONFIGURATION 
-        $host= 'yourhost';         
+        //LDAP SETUP CONFIGURATION
+        $host= '192.168.10.30';  // server docker system
         $port= 389; //LDAP port // SSL: 698
-        $dn="ou=admin,dc=ugr,dc=es"; //change your DN
-        $pwd="keypass"; // your admin password
+        $dn="cn=admin,dc=ugr,dc=es"; //change your DN
+        $pwd_admin="password"; // your admin password
 
         $conn = ldap_connect( "ldap://".$host,389) ;
 
 
-        ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);
-        
+        ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3);        
+
         //Matching DN admin and password
-        $bind = ldap_bind( $conn, $dn, $pwd);
+        $bind = ldap_bind( $conn, $dn, $pwd_admin);
+        
 
         if ($bind){
-
-            $newbind = ldap_bind( $conn, "uid=".$user.",ou=Users,dc=ugr,dc=es", $password );
+            $newbind = ldap_bind( $conn, "cn=".$user.",ou=Users,dc=ugr,dc=es", $password );
             if ($newbind) {
                echo "USER: ".$user." Authenticated";
             }
             else {
-               echo "USER: ".$user." NOT Authenticated";  
+               echo "USER: ".$user." NOT Authenticated";
             }
         }
 
+
 ?>
 ```
+
+Full example: [authentication.php](extras/authentication.php): 
 
 
 
