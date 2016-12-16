@@ -874,6 +874,8 @@ Edit file  ``/etc/pam.d/common-password``,
 ```
 vi /etc/pam.d/common-password
 ```
+
+```
 ...
 password        [success=2 default=ignore]      pam_unix.so obscure sha512
 password        [success=1 user_unknown=ignore default=die]     pam_ldap.so use_authtok try_first_pass
@@ -928,7 +930,7 @@ Restart nscd service:
 Try login in with ssh:
 
 ```
-ssh -p <PORTcontainer> LDAP_user@localhost
+ssh  myuser@localhost
 ```
 
 
