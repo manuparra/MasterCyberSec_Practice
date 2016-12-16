@@ -305,7 +305,7 @@ ou: People
 
 dn: ou=Users,dc=ugr,dc=es
 objectClass: organizationalUnit
-ou: People
+ou: Users
 
 dn: ou=Group,dc=ugr,dc=es
 objectClass: organizationalUnit
@@ -479,7 +479,7 @@ ldapadd -x -W -D "cn=admin,dc=ugr,dc=es" -f /root/groups.ldif
 ldapadd -x -W -D "cn=admin,dc=ugr,dc=es" -f /root/users.ldif
 ```
 
-For example file ``users.ldif`` :
+For example file ``users.ldif`` will create user ``mparra`` inside ``People``. You must to consider use ``ou=Users``, if your user will be part of ``Users`` or ``LinuxUser``, or create your own ``OU``:
 
 ```
 dn: uid=myuser,ou=People,dc=ugr,dc=es
