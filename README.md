@@ -743,7 +743,9 @@ Copy the next piece of code or download full example below, and test it (customi
 ?>
 ```
 
-Full example: [authentication.php](extras/authentication.php): 
+File with the full example: [authentication.php](extras/authentication.php). Copy in your container in ``/var/www/html/`` and check the URL (customize it):
+
+[!LoginLDAPTest](https://sites.google.com/site/manuparra/home/loginldap.png)
 
 
 
