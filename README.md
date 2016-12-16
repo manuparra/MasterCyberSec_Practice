@@ -303,6 +303,10 @@ dn: ou=People,dc=ugr,dc=es
 objectClass: organizationalUnit
 ou: People
 
+dn: ou=Users,dc=ugr,dc=es
+objectClass: organizationalUnit
+ou: People
+
 dn: ou=Group,dc=ugr,dc=es
 objectClass: organizationalUnit
 ou: Group
