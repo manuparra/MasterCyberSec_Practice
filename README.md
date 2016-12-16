@@ -764,7 +764,7 @@ It can be installed into a container from multiple ways:
 2 With a container installing ``apache``, ``php``, and install ``phpLDAPadmin`` from the scratch. (Use our phpLDAPadmin fork https://github.com/manuparra/phpLDAPadmin that it solves a problem with the original ``phpLDAPadmin``).
 
 
-## Authentication on LDAP server with SSH and PAM
+## Authentication on LDAP server with SSH and PAM on Ubuntu
 
 **NOTE: ALL IN YOUR CONTAINER**
 
@@ -831,11 +831,163 @@ And then:
 /etc/init.d/nscd restart
 ```
 
-Exit from the container and try log in with ssh:
+**Now we should verify the PAM configuration**:
+
+Edit file ``/etc/pam.d/common-auth``
+
+```
+vi /etc/pam.d/common-auth
+```
+
+It must to contain:
+
+```
+...
+auth    [success=2 default=ignore]      pam_unix.so nullok_secure try_first_pass
+auth    [success=1 default=ignore]      pam_ldap.so use_first_pass
+...
+auth    requisite                       pam_deny.so
+...
+auth    required                        pam_permit.so
+...
+```
+
+Edit file ``/etc/pam.d/common-account``
+
+```
+vi /etc/pam.d/common-account
+```
+
+```
+...
+account [success=2 new_authtok_reqd=done default=ignore]        pam_unix.so
+account [success=1 default=ignore]      pam_ldap.so
+...
+account requisite                       pam_deny.so
+...
+account required                        pam_permit.so
+...
+```
+
+Edit file  ``/etc/pam.d/common-password``,
+
+```
+vi /etc/pam.d/common-password
+```
+...
+password        [success=2 default=ignore]      pam_unix.so obscure sha512
+password        [success=1 user_unknown=ignore default=die]     pam_ldap.so use_authtok try_first_pass
+...
+password        requisite                       pam_deny.so
+...
+password        required                        pam_permit.so
+...
+```
+
+Edit ``/etc/pam.d/common-session``
+
+```
+vi /etc/pam.d/common-session
+```
+
+```
+...
+session  required                                         pam_mkhomedir.so
+...
+```
+
+It will create a HOME directory for LDAP users who does not have home directory when login to LDAP server.
+
+Edit file ``/etc/pam.d/common-session-noninteractive``
+
+
+```
+vi /etc/pam.d/common-session-noninteractive,
+```
+
+```
+...
+session [default=1]                     pam_permit.so
+...
+session requisite                       pam_deny.so
+...
+session required                        pam_permit.so
+...
+session required        pam_unix.so
+session optional                        pam_ldap.so
+```
+
+
+Restart nscd service:
+
+```
+/etc/init.d/nscd restart
+```
+
+
+Try login in with ssh:
 
 ```
 ssh -p <PORTcontainer> LDAP_user@localhost
 ```
+
+
+
+## Authentication on LDAP server with SSH and PAM on CentOS
+
+Install the next packages:
+
+```
+yum install -y openldap-clients nss-pam-ldapd
+```
+
+or 
+
+```
+yum group install "Directory Client"
+```
+
+Follow the next steps: 
+
+```
+yum install authconfig
+```
+
+```
+authconfig --enableldap --enableldapauth --ldapserver='ldap://LDAPServer' --ldapbasedn='dc=ugr,dc=es' --enablemkhomedir --enableshadow --enablelocauthorize --passalgo=sha256 --update
+```
+
+If Pluggable Authentication Module (PAM) for LDAP is missing. You can find out what package provides this command with:
+
+```
+yum install pam_ldap
+```
+
+and
+
+``
+authconfig --test
+``
+
+
+Pay attention to are the “LDAP server” and the “LDAP base DN” lines, making sure they match with your LDAP server.
+
+Finally:
+
+
+```
+yum install nss-pam-ldapd
+chkconfig nslcd on
+service nslcd start
+```
+
+Name Service Switch (NSS) allows your LDAP server to provide user account, group, host name, alias, netgroup, etc. It also provides a Pluggable Authentication Module (PAM) to do authentication to an LDAP server based on the configuration of the nsswitch file.
+
+
+```
+ssh myuser@localhost
+```
+
 
 
 # Working with OpenNebula
