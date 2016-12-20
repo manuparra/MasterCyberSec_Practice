@@ -40,6 +40,7 @@ For example SELinux allows a process with the Apache label (httpd_t) to share da
 
 SELinux provides confinement on an application if the application has been hacked, even if the application is running as root. If policy says the (for example) Apache process is only supposed to read Apache content, then even if a hacker gets uid = 0 (the root user), he will not be able to turn it into a spam bot; he will not be able to read credit card data in your home directory; and he will not be able to destroy log files. The hacked process will only be able to act as an Apache process.
 
+![SELinuxExample](https://www.centos.org/docs/5/html/Deployment_Guide-en-US/images/selinux/SELinux_Decision_Process.png)
 
 # SELinux Policy
 
@@ -192,6 +193,9 @@ By default SELinux log messages are written to ```/var/log/audit/audit.log``` vi
 
 # Enable Apache Public HTML folder with SELinux
 
+
+![SELinuxApache](https://sites.google.com/site/manuparra/home/selinux.png)
+
 ```
 vi -w /etc/httpd/conf.d/userdir.conf
 ```
@@ -288,12 +292,12 @@ Changes made by ``semanage fcontext`` are used by the following utilities. The s
 
 
 ```
-semanage fcontext -a -t httpd_sys_content_rw_t '/home/manuparra/public_html/(/.*)?'
+semanage fcontext -a -t httpd_sys_content_rw_t '/home/manuparra/public_html(/.*)?'
 
 restorecon -R -v /home/manuparra/public_html
 ```
 
-The first command uses ``semanage`` (SELinux Manage) with the ``fcontext`` command (File Context). We tell the system to add the SELinux type ``httpd_sys_content_rw_t`` type to the ``/home/manuparra/public_html`` directory and all of its children using the regular expression ``'/home/manuparra/public_html/(/.*)?'``. Then running restorecon will actually change the labels on disk on all existing files and directories.
+The first command uses ``semanage`` (SELinux Manage) with the ``fcontext`` command (File Context). We tell the system to add the SELinux type ``httpd_sys_content_rw_t`` type to the ``/home/manuparra/public_html`` directory and all of its children using the regular expression ``'/home/manuparra/public_html(/.*)?'``. Then running restorecon will actually change the labels on disk on all existing files and directories.
 
 ## SELinux and ports security
 
@@ -314,6 +318,7 @@ You can use the semanage port -l command to list all port definitions, or system
 
 # References and more information
 
+- https://linuxacademy.com/blog/linux/exploring-selinux-context/
 - https://www.digitalocean.com/community/tutorials/an-introduction-to-selinux-on-centos-7-part-1-basic-concepts
 - https://www.drupalwatchdog.com/volume-2/issue-2/using-apache-and-selinux-together
 
