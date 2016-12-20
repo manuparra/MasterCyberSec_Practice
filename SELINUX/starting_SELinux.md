@@ -12,12 +12,17 @@ Table of Contents
 =================
    
    * [What is SELinux?](#what-is-selinux)
+   * [SELinux Policy](#selinux-policy)
    * [Installing SELinux](#installing-selinux)
       * [Setting up SELinux](#setting-up-selinux)
          * [Checking yout SELinux status and modes](#checking-yout-selinux-status-and-modes)
          * [Configuration file](#configuration-file)
          * [Enabling / disabling SELinux](#enabling--disabling-selinux)
+   * [Troubleshooting with SELinux](#troubleshooting-with-selinux)
+      * [Checking SELinux logs](#checking-selinux-logs)
+   * [Enable Apache Public HTML folder with SELinux](#enable-apache-public-html-folder-with-selinux)
    * [References and more information](#references-and-more-information)
+
 
 # What is SELinux?
 
