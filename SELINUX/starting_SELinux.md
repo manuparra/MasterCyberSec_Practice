@@ -23,6 +23,10 @@ Table of Contents
    * [Enable Apache Public HTML folder with SELinux](#enable-apache-public-html-folder-with-selinux)
       * [Persistent context changes](#persistent-context-changes)
       * [SELinux and ports security](#selinux-and-ports-security)
+   * [Users](#users)
+      * [Restricting Switched User Access](#restricting-switched-user-access)
+      * [Restricting Permissions to Run Scripts](#restricting-permissions-to-run-scripts)
+      * [Restricting Access to Services](#restricting-access-to-services)
    * [References and more information](#references-and-more-information)
 
 
@@ -312,6 +316,319 @@ semanage port -a -t http_port_t -p tcp 81
 ```
 
 You can use the semanage port -l command to list all port definitions, or system-config-selinux.
+
+
+# Users
+
+
+First, let's create four user accounts to demonstrate SELinux capabilities as we go along.
+
+```
+regularuser
+switcheduser
+guestuser
+restricteduser
+```
+
+You should currently be the root user. Let's run the following command to add the regularuser account:
+
+```
+useradd -c "Regular User" regularuser
+```
+
+Then we run the passwd command to change its password:
+
+```
+passwd regularuser
+```
+
+Do the same steps for each user, and then try:
+
+```
+ls -Z /home
+```
+
+Example role list:
+
+- guest_u: This user doesn't have access to X-Window system (GUI) or networking and can't execute su / sudo command.
+- xguest_u: This user has access to GUI tools and networking is available via Firefox browser.
+- user_u: This user has more access than the guest accounts (GUI and networking), but can't switch users by running su or sudo.
+- staff_u: Same rights as user_u, except it can execute sudo command to have root privileges.
+- system_u: This user is meant for running system services and not to be mapped to regular user accounts.
+
+
+
+SELinux users are different entities from normal Linux user accounts, including the root account. 
+
+To view this mapping, we can run the semanage login -l command:
+
+```
+semanage login -l
+```
+
+To see what SELinux users are available in the system, we can run the semanage user command:
+
+```
+semanage user -l
+```
+
+Now from this table we can see the unconfined_u user is mapped to the system_r and unconfined_r roles. Although not evident here, SELinux policy actually allows these roles to run processes in the unconfined_t domain. Similarly, user sysadm_u is authorized for the sysadmr role, but guestu is mapped to guest_r role. Each of these roles will have different domains authorized for them.
+
+Run:
+
+```
+id -Z
+```
+
+
+## Restricting Switched User Access
+
+
+You don't want the user to be able to switch to other accounts, including the root account:
+
+Log in with regularuser and try to switch to switcheduser:
+
+```
+[regularuser@localhost ~]$ su - switcheduser
+Password:
+[switcheduser@localhost ~]$
+```
+
+And now as root user (open another terminal):
+
+
+```
+semanage login -a -s user_u regularuser
+```
+
+Try login with user regularuser and run 
+
+
+```
+[regularuser@localhost ~]$ su - switcheduser
+
+```
+
+This is what we see now:
+
+```
+su: Authentication failure
+```
+
+If we now run the ``id -Z`` command again to see the SELinux context for regularuser, we will see the output is quite different from what we saw before: ``regularuser`` is now mapped to ``user_u``.
+
+```
+id -Z
+```
+
+Will return:
+```
+user_u:user_r:user_t:s0
+```
+
+
+## Restricting Permissions to Run Scripts
+
+We can run the ``getsebool`` command to check the boolean value:
+
+```
+getsebool allow_guest_exec_content
+```
+
+```
+semanage login -a -s guest_u guestuser
+```
+
+We can verify the action by running the semanage login -l command again:
+
+```
+semanage login -l
+```
+
+
+As we can see, guestuser is now mapped to the guest_u SELinux user account.
+
+```
+Login Name           SELinux User         MLS/MCS Range        Service
+__default__          unconfined_u         s0-s0:c0.c1023       *
+guestuser            guest_u              s0                   *
+regularuser          user_u               s0                   *
+root                 unconfined_u         s0-s0:c0.c1023       *
+system_u             system_u             s0-s0:c0.c1023       *
+```
+
+Log in with guestuser:
+
+```
+[guestuser@localhost ~]$ pwd
+```
+
+You are in ``/home/guestuser/``
+
+
+Create the script:
+
+```
+vi myscript.sh
+```
+
+with:
+
+```
+echo "This is a test script"
+```
+
+Make the script executable:
+
+```
+chmod u+x myscript.sh
+```
+
+Execute script:
+
+```
+ ~/myscript.sh
+```
+
+Next we go back to the ``root``  terminal window and change the boolean setting ``allow_guest_exec_content`` to ``off`` and verify it:
+
+```
+setsebool allow_guest_exec_content off
+getsebool allow_guest_exec_content
+```
+
+Result:
+
+```
+guest\_exec\_content --> off
+```
+
+Return to the guestuser and try execute again:
+
+```
+ ~/myscript.sh
+```
+
+It produces:
+
+```
+-bash: /home/guestuser/myscript.sh: Permission denied
+```
+
+So this is how SELinux can apply an additional layer of security on top of DAC. Even when the user has full read, write, execute access to the script created in their own home directory, they can still be stopped from executing it.
+
+Look at the ``/var/log/messages`` file.
+
+
+## Restricting Access to Services
+
+Firstly, stop apache service:
+
+```
+service httpd stop
+```
+
+Log in with restricted user and try:
+
+```
+id -Z
+
+unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+```
+
+So the account has the default behaviour of running as unconfined_u user and having access to unconfined_r role. However, this account does not have the right to start any processes within the system. 
+
+
+The following code block shows that restricteduser is trying to start the httpd daemon and getting an access denied error:
+
+```
+[restricteduser@localhost ~]$ service httpd start
+Redirecting to /bin/systemctl start  httpd.service
+Failed to issue method call: Access denied
+```
+
+Next we move back to the root user terminal window and make sure the restricteduser account has been added to the /etc/sudoers file. 
+
+```
+visudo
+```
+
+
+Edit and save:
+
+```
+...
+restricteduser ALL=(ALL)      ALL
+...
+```
+
+If we now log out of the restricteduser terminal window and log back in again, we can start and stop the httpd service with sudo privileges:
+
+```
+[restricteduser@localhost ~]$ sudo service httpd start
+```
+
+The user can also stop the service now:
+
+```
+[restricteduser@localhost ~]$ sudo service httpd stop
+```
+
+That's all very normal: system administrators give sudo access to user accounts they trust. But what if you want to stop this particular user from starting the httpd service even when the user's account is listed in the sudoers file?.
+
+
+```
+semanage login -a -s user_u restricteduser
+```
+
+Now that restricteduser has been restricted to user_u (and that means to role user_r and domain user_t), we can verify its access using the seinfo command from our root user's window:
+
+
+
+```
+seinfo -uuser_u -x
+```
+
+
+The output shows the roles user_u can assume. These are object_r and user_r:
+
+```
+   user_u
+      default level: s0
+      range: s0
+      roles:
+         object_r
+         user_r
+```
+
+
+Taking it one step further, we can run the seinfo command to check what domains the user_r role is authorized to enter:
+
+```
+seinfo -ruser_r -x
+```
+
+Looking for httpd services:
+
+
+```
+seinfo -ruser_r -x | grep httpd
+```
+
+Taking this example then, if the restricteduser account tries to start the httpd daemon, the access should be denied because the httpd process runs within the httpd_t domain and that's not one of the domains the user_r role is authorized to access. And we know user_u (mapped to restricteduser) can assume user_r role. This should fail even if the restricteduser account has been granted sudo privilege.
+
+
+Going back to the restricteduser account's terminal window, we try to start the httpd daemon now (we were able to stop it before because the account was granted sudo privilege):
+
+```
+[restricteduser@localhost ~]$ sudo service httpd start
+
+```
+The access is denied:
+
+```
+sudo: PERM_SUDOERS: setresuid(-1, 1, -1): Operation not permitted
+```
 
 
 
