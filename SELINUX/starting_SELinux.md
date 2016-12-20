@@ -21,7 +21,11 @@ Table of Contents
    * [Troubleshooting with SELinux](#troubleshooting-with-selinux)
       * [Checking SELinux logs](#checking-selinux-logs)
    * [Enable Apache Public HTML folder with SELinux](#enable-apache-public-html-folder-with-selinux)
+      * [Persistent context changes](#persistent-context-changes)
+      * [SELinux and ports security](#selinux-and-ports-security)
    * [References and more information](#references-and-more-information)
+
+
 
 
 # What is SELinux?
@@ -269,9 +273,9 @@ chcon -R -t httpd_sys_content_t /home/manuparra/public_html
 
 With ``chcon`` change the SELinux security context of each FILE to CONTEXT.
 
-The ``chcon`` command changes the SELinux context for files. Changes made with the chcon command do not survive a file system relabel, or the execution of the restorecon command. SELinux policy controls whether users are able to modify the SELinux context for any given file. When using chcon, users provide all or part of the SELinux context to change. An incorrect file type is a common cause of SELinux denying access.
+The ``chcon`` command changes the SELinux context for files. Changes made with the chcon command **do not survive** a file system relabel, or the execution of the restorecon command. SELinux policy controls whether users are able to modify the SELinux context for any given file. When using chcon, users provide all or part of the SELinux context to change. An incorrect file type is a common cause of SELinux denying access.
 
-
+## Persistent context changes 
 
 The ``semanage fcontext`` command is used to change the SELinux context of files. To show contexts to newly created files and directories, run the following command as root:
 
@@ -291,6 +295,7 @@ restorecon -R -v /home/manuparra/public_html
 
 The first command uses ``semanage`` (SELinux Manage) with the ``fcontext`` command (File Context). We tell the system to add the SELinux type ``httpd_sys_content_rw_t`` type to the ``/home/manuparra/public_html`` directory and all of its children using the regular expression ``'/home/manuparra/public_html/(/.*)?'``. Then running restorecon will actually change the labels on disk on all existing files and directories.
 
+## SELinux and ports security
 
 SELinux also controls network access. By default the Apache process is allowed to bind the ``http_port_t`` type. This type is defined for the following tcp ports:
 
