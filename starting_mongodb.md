@@ -499,7 +499,7 @@ AND:
 ```
 
 OR:
-> db.mycol.find(
+> db.MyFirstCollection.find(
    {
       $or: [
          {key1: value1}, {key2:value2}
@@ -510,15 +510,70 @@ OR:
 Mixing:
 
 ```
-db.mycol.find(
+db.MyFirstCollection.find(
 		{"likes": {$gt:10}, 
 		 $or: 
 			[
-			 {"by": "tutorials point"},
-   			 {"title": "MongoDB Overview"}
+			 {"by": "..."},
+   			 {"title": "..."}
    			]
    		}).pretty()
 ```
+
+## Updating documents
+
+Syntax:
+
+```
+> db.MyFirstCollection.update(<selection criteria>, <data to update>)
+```
+
+Example:
+
+```
+db.MyFirstCollection.update(
+	 { 'place_type':'area'},
+	 { $set: {'title':'New MongoDB Tutorial'}},
+	 {multi:true}
+	);
+```
+
+IMPORTANT: use ``multi:true`` to update all coincedences.
+
+
+## Deleting documents
+
+MongoDB's ``remove()`` method is used to remove a document from the collection. ``remove()`` method accepts two parameters. One is deletion criteria and second is justOne flag.
+
+```
+> db.MyFirstCollection.remove(<criteria>)
+```
+
+Example:
+
+```
+db.MyFirstCollection.remove({'country':'United States'})
+```
+
+
+## Import external data
+
+Download this dataset in you Docker Home (copy this link: http://samplecsvs.s3.amazonaws.com/SacramentocrimeJanuary2006.csv):
+
+[DataSet](http://samplecsvs.s3.amazonaws.com/SacramentocrimeJanuary2006.csv) 7585 rows and 794 KB)
+
+Use the next command:
+
+```
+curl -O http://samplecsvs.s3.amazonaws.com/SacramentocrimeJanuary2006.csv
+```
+
+To import this file:
+
+```
+mongoimport -d manuparra -c MyFirstCollection --type csv --file /tmp/SacramentocrimeJanuary2006.csv --headerline
+```
+
 
 
 
