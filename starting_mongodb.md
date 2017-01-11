@@ -13,9 +13,13 @@ Table of Contents
 =================
 
 
-# Using MongoDB, why? and where?
+# Using MongoDB, why? where? what?
 
-MongoDB main features:
+MongoDB is an open-source database developed by MongoDB, Inc. 
+
+MongoDB stores data in JSON-like documents that can vary in structure. Related information is stored together for fast query access through the MongoDB query language. MongoDB uses dynamic schemas, meaning that you can create records **without first defining the structure**, such as the fields or the types of their values. You can change the structure of records (which we call documents) simply by adding new fields or deleting existing ones. This data model give you the ability to represent hierarchical relationships, to store arrays, and other more complex structures easily. Documents in a collection need not have an identical set of fields and denormalization of data is common. MongoDB was also designed with high availability and scalability in mind, and includes out-of-the-box replication and auto-sharding.
+
+**MongoDB main features:**
 
 * Document Oriented Storage − Data is stored in the form of JSON style documents.
 * Index on any attribute
@@ -23,7 +27,7 @@ MongoDB main features:
 * Auto-sharding
 * Rich queries
 
-Using Mongo:
+**Using Mongo:**
 
 * Big Data
 * Content Management and Delivery
@@ -31,6 +35,65 @@ Using Mongo:
 * User Data Management
 * Data Hub
 
+**Compared to MySQL:**
+
+Many concepts in MySQL have close analogs in MongoDB. Some of the common concepts in each system:
+
+* MySQL -> MongoDB
+* Database -> Database
+* Table -> Collection
+* Row -> Document
+* Column -> Field
+* Joins -> Embedded documents, linking
+
+**Query Language:**
+
+From MySQL:
+
+```
+INSERT INTO users (user_id, age, status)
+VALUES ('bcd001', 45, 'A');
+```
+
+To MongoDB:
+
+```
+db.users.insert({
+  user_id: 'bcd001',
+  age: 45,
+  status: 'A'
+});
+```
+
+From MySQL:
+
+```
+SELECT * FROM users
+```
+
+To MongoDB:
+
+```
+db.users.find()
+```
+
+
+From MySQL:
+
+```
+UPDATE users SET status = 'C'
+WHERE age > 25
+```
+
+To MongoDB:
+
+```
+db.users.update(
+  { age: { $gt: 25 } },
+  { $set: { status: 'C' } },
+  { multi: true }
+)
+```
 
 
 ## Documents instead row/cols
@@ -79,8 +142,7 @@ To specify or access a field of an document: use dot notation
 mydoc.name.first
 ```
 
-
-Documents allow embedded documents embedded documents embedded documen ...:
+Documents allow embedded documents embedded documents embedded documents ...:
 
 ```
 {
@@ -118,7 +180,6 @@ The maximum BSON document size is **16 megabytes!**.
 * Binary data − This datatype is used to store binary data.
 * Code − This datatype is used to store JavaScript code into the document.
 * Regular expression − This datatype is used to store regular expression.
-
 
 
 # Starting with MongoDB
@@ -283,6 +344,7 @@ Example of document: place
     },
      "country":"United States",
      "country_code":"US",
+     "likes":2392842343,
      "full_name":"Washington, DC",
      "id":"01fbe706f872cb32",
      "name":"Washington",
@@ -309,6 +371,7 @@ db.MyFirstCollection.insert(
       },
      "country":"United States",
      "country_code":"US",
+     "likes":2392842343,
      "full_name":"Washington, DC",
      "id":"01fbe706f872cb32",
      "name":"Washington",
@@ -323,6 +386,62 @@ Check if document is stored:
 ```
 > db.MyFirstCollection.find();
 ```
+
+Add multiple documents:
+
+```
+	var places= [
+		{    
+	     "bounding_box":
+	      {
+	        "coordinates":
+	        [[
+	                [-77.119759,38.791645],
+	                [-76.909393,38.791645],
+	                [-76.909393,38.995548],
+	                [-77.119759,38.995548]
+	        ]],
+	        "type":"Polygon"
+	      },
+	     "country":"United States",
+	     "country_code":"US",
+	     "likes":2392842343,
+	     "full_name":"Washington, DC",
+	     "id":"01fbe706f872cb32",
+	     "name":"Washington",
+	     "place_type":"city",
+	     "url": "http://api.twitter.com/1/geo/id/01fbe706f872cb32.json"
+	},
+	{    
+	     "bounding_box":
+	      {
+	        "coordinates":
+	        [[
+	                [-7.119759,33.791645],
+	                [-7.909393,34.791645],
+	                [-7.909393,32.995548],
+	                [-7.119759,34.995548]
+	        ]],
+	        "type":"Polygon"
+	      },
+	     "country":"Spain",
+	     "country_code":"US",
+	     "likes":2334244,
+	     "full_name":"Madrid",
+	     "id":"01fbe706f872cb32",
+	     "name":"Madrid",
+	     "place_type":"city",
+	     "url": "http://api.twitter.com/1/geo/id/01fbe706f87333e.json"
+	}
+	]
+```
+
+and:
+
+```
+db.MyFirstCollection.insert(places)
+```
+
 
 In the inserted document, if we don't specify the ``_id`` parameter, then MongoDB assigns a unique ObjectId for this document.
 You can override value `_id`, using your own ``_id``.
@@ -339,6 +458,68 @@ Differences:
 >If a document does not exist with the specified ``_id`` value, the ``save()`` method performs an insert with the specified fields in the document.
 
 >If a document exists with the specified ``_id` value, the ``save()`` method performs an update, replacing all field in the existing record with the fields from the document.
+
+
+## Selecting/Querying/Filtering
+
+Show all documents in ``MyFirstCollection``:
+
+```
+> db.MyFirstCollection.find();
+```
+
+Show documentos in pretty mode:
+
+```
+> db.MyFirstCollection.find().pretty()
+```
+
+Filtering:
+
+Equality	``{<key>:<value>}``	 ``db.MyFirstCollection.find({"country":"Spain"}).pretty()``
+
+Less Than	``{<key>:{$lt:<value>}}``	``db.mycol.find({"likes":{$lt:50}}).pretty()``
+
+Less Than Equals	``{<key>:{$lte:<value>}}``	``db.mycol.find({"likes":{$lte:50}}).pretty()``
+
+Greater Than	``{<key>:{$gt:<value>}}``	``db.mycol.find({"likes":{$gt:50}}).pretty()``
+
+More: ``gte`` Greater than equal, ``ne`` Not equal, etc. 
+
+AND:
+
+```
+> db.MyFirstCollection.find(
+   {
+      $and: [
+         {key1: value1}, {key2:value2}
+      ]
+   }
+).pretty()
+```
+
+OR:
+> db.mycol.find(
+   {
+      $or: [
+         {key1: value1}, {key2:value2}
+      ]
+   }
+).pretty()
+
+Mixing:
+
+```
+db.mycol.find(
+		{"likes": {$gt:10}, 
+		 $or: 
+			[
+			 {"by": "tutorials point"},
+   			 {"title": "MongoDB Overview"}
+   			]
+   		}).pretty()
+```
+
 
 
 
