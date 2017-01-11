@@ -58,7 +58,7 @@ MongoDB stores data records as BSON documents.
 
 BSON is a binary representation of JSON documents, it contains more data types than JSON.
 
-[!bsonchema](https://docs.mongodb.com/manual/_images/crud-annotated-document.png)
+![bsonchema](https://docs.mongodb.com/manual/_images/crud-annotated-document.png)
 
 MongoDB documents are composed of field-and-value pairs and have the following structure:
 
