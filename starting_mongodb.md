@@ -35,8 +35,8 @@ Using Mongo:
 
 ## Documents datatypes
 
-* String − This is the most commonly used datatype to store the data. String in MongoDB must be UTF-8 valid.
-* Integer − This type is used to store a numerical value. Integer can be 32 bit or 64 bit depending upon your server.
+* String − This is the most commonly used datatype to store the data.
+* Integer − This type is used to store a numerical value.
 * Boolean − This type is used to store a boolean (true/ false) value.
 * Double − This type is used to store floating point values.
 * Min/ Max keys − This type is used to compare a value against the lowest and highest BSON elements.
@@ -190,7 +190,7 @@ db.MySecondCollection.drop();
 ```
 
 
-
+## Working with documents
 
 
 
