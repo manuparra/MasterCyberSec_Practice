@@ -52,6 +52,74 @@ Using Mongo:
 * Regular expression − This datatype is used to store regular expression.
 
 
+## Documents instead row/cols
+
+MongoDB stores data records as BSON documents. 
+
+BSON is a binary representation of JSON documents, it contains more data types than JSON.
+
+[!bsonchema](https://docs.mongodb.com/manual/_images/crud-annotated-document.png)
+
+MongoDB documents are composed of field-and-value pairs and have the following structure:
+
+```
+{
+   field1: value1,
+   field2: value2,
+   field3: value3,
+   ...
+   fieldN: valueN
+}
+```
+
+Example of document:
+
+```
+var mydoc = {
+               _id: ObjectId("5099803df3f4948bd2f98391"),
+               name: 
+               		{ 
+               		 first: "Alan", 
+               		 last: "Turing" 
+               		},
+               birth: new Date('Jun 23, 1912'),
+               death: new Date('Jun 07, 1954'),
+               contribs: [ 
+               				"Turing machine", 
+               				"Turing test", 
+               				"Turingery" ],
+               views : NumberLong(1250000)
+            }
+```
+
+To specify or access a field of an document: use dot notation
+
+```
+mydoc.name.first
+```
+
+Documents allow embedded documents embedded documents embedded documen ...:
+
+```
+{
+   ...
+   name: { first: "Alan", last: "Turing" },
+   contact: { 
+   			phone: { 
+   					model: { 
+   						brand: "LG", 
+   						screen: {'maxres': "1200x800"} 
+   					},
+   					type: "cell", 
+   					number: "111-222-3333" } },
+   ...
+}
+```
+
+The maximum BSON document size is **16 megabytes!**.
+
+
+
 
 # Starting with MongoDB
 
@@ -190,7 +258,87 @@ db.MySecondCollection.drop();
 ```
 
 
-## Working with documents
+## Working with documents on collections
+
+To insert data into MongoDB collection, you need to use MongoDB's ``insert()`` or ``save()`` method.
+
+```
+> db.MyFirstCollection.insert(<document>);
+```
+
+Example of document: place 
+
+```
+{    
+     "bounding_box":
+    {
+        "coordinates":
+        [[
+                [-77.119759,38.791645],
+                [-76.909393,38.791645],
+                [-76.909393,38.995548],
+                [-77.119759,38.995548]
+        ]],
+        "type":"Polygon"
+    },
+     "country":"United States",
+     "country_code":"US",
+     "full_name":"Washington, DC",
+     "id":"01fbe706f872cb32",
+     "name":"Washington",
+     "place_type":"city",
+     "url": "http://api.twitter.com/1/geo/id/01fbe706f872cb32.json"
+}
+```
+
+To insert:
+
+```
+db.MyFirstCollection.insert(
+{    
+     "bounding_box":
+      {
+        "coordinates":
+        [[
+                [-77.119759,38.791645],
+                [-76.909393,38.791645],
+                [-76.909393,38.995548],
+                [-77.119759,38.995548]
+        ]],
+        "type":"Polygon"
+      },
+     "country":"United States",
+     "country_code":"US",
+     "full_name":"Washington, DC",
+     "id":"01fbe706f872cb32",
+     "name":"Washington",
+     "place_type":"city",
+     "url": "http://api.twitter.com/1/geo/id/01fbe706f872cb32.json"
+}
+);
+```
+
+Check if document is stored:
+
+```
+> db.MyFirstCollection.find();
+```
+
+In the inserted document, if we don't specify the ``_id`` parameter, then MongoDB assigns a unique ObjectId for this document.
+You can override value `_id`, using your own ``_id``.
+
+Two methods to save/insert:
+
+```
+db.MyFirstCollection.save({username:"myuser",password:"mypasswd"})
+db.MyFirstCollection.insert({username:"myuser",password:"mypasswd"})
+```
+
+Differences:
+
+>If a document does not exist with the specified ``_id`` value, the ``save()`` method performs an insert with the specified fields in the document.
+
+>If a document exists with the specified ``_id` value, the ``save()`` method performs an update, replacing all field in the existing record with the fields from the document.
 
 
 
