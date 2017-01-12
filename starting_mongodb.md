@@ -8,10 +8,21 @@
 Manuel J. Parra Royón (manuelparra@decsai.ugr.es) & José. M. Benítez Sánchez (j.m.benitez@decsai.ugr.es)
 
 
-
 Table of Contents
 =================
-
+   
+   * [Using MongoDB, why? where? what?](#using-mongodb-why-where-what)
+      * [Documents instead row/cols](#documents-instead-rowcols)
+         * [Documents datatypes](#documents-datatypes)
+   * [Starting with MongoDB](#starting-with-mongodb)
+      * [Connecting with MongoDB Service:](#connecting-with-mongodb-service)
+      * [Selecting/Creating/Deleting DataBase](#selectingcreatingdeleting-database)
+      * [Selecting/Querying/Filtering](#selectingqueryingfiltering)
+      * [Updating documents](#updating-documents)
+      * [Deleting documents](#deleting-documents)
+      * [Import external data](#import-external-data)
+      * [MongoDB Clients](#mongodb-clients)
+   * [References](#references)
 
 # Using MongoDB, why? where? what?
 
@@ -203,7 +214,7 @@ mongo         mongodump     mongoexport   mongofiles
 mongoimport   mongooplog    mongoperf     mongorestore  mongostat     mongotop 
 ```
 
-## Connecting with MongoDB Service:
+## Connecting with MongoDB Service
 
 The default port for mongodb and mongos instances is 27017. 
 You can change this port with port or --port when connect.
@@ -247,23 +258,23 @@ mongo 192.168.10.30:27017/manuparra -p mipasss
 
 The command will create a new database if it doesn't exist, otherwise it will return the existing database.
 
-``
+```
 > use manuparra:
-``
+```
 
 Now you are using ``manuparra`` database.
 
 If you want to kwnow what database are you using:
 
-``
+```
 > db
-``
+```
 
 The ```command db.dropDatabase()`` is used to drop a existing database.
 
 DO NOT USE THIS COMMAND, WARNING:
 
-``db.dropDatabase()``
+```db.dropDatabase()```
 
 To kwnow the size of databases:
 
@@ -283,9 +294,9 @@ where ``options`` is Optional and specify options about memory size and indexing
 
 Remember that firstly mongodb needs to kwnow what is the Database where it will create the Collection. Use ``show dbs`` and then ``use <your database>``.
 
-``
+```
 use manuparra;
-``
+```
 
 And then create the collection:
 
@@ -630,8 +641,7 @@ Try out the next queries on your collection:
 - Count number of crimes per hour.
 
 
-
-## MongoDB Clients:
+## MongoDB Clients
 
 - Command line tools: https://github.com/mongodb/mongo-tools
 - Use Mongo from PHP: https://github.com/mongodb/mongo-php-library
@@ -640,10 +650,10 @@ Try out the next queries on your collection:
 - Full list of Mongo Clients (all languages): https://docs.mongodb.com/ecosystem/drivers/#drivers
 
 
+# References 
 
-
-
-
-
-
+- Getting Started with MongoDB (MongoDB Shell Edition): https://docs.mongodb.com/getting-started/shell/
+- MongoDB Tutorial: https://www.tutorialspoint.com/mongodb/
+- MongoDB Tutorial for Beginners: https://www.youtube.com/watch?v=W-WihPoEbR4
+- Mongo Shell Quick Reference: https://docs.mongodb.com/v3.2/reference/mongo-shell/
 
