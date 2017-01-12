@@ -192,7 +192,9 @@ ssh manuparra@.........es
 
 First of all, check that you have access to the mongo tools system, try this command:
 
-``mongo + tab``
+```
+mongo + tab
+```
 
 it will show:
 
@@ -468,11 +470,48 @@ Show all documents in ``MyFirstCollection``:
 > db.MyFirstCollection.find();
 ```
 
+Only one document, not all:
+
+```
+> db.MyFirstCollection.findOne();
+```
+
+Counting documents, add ``.count()`` to your sentences:
+
+```
+> db.MyFirstCollection.find().count();
+```
+
+
 Show documentos in pretty mode:
 
 ```
 > db.MyFirstCollection.find().pretty()
 ```
+
+Selecting or searching by embeded fields, for example ``bounding_box.type``:
+
+```
+...
+ "bounding_box":
+    {
+        "coordinates":
+        [[
+                [-77.119759,38.791645],
+                [-76.909393,38.791645],
+                [-76.909393,38.995548],
+                [-77.119759,38.995548]
+        ]],
+        "type":"Polygon"
+    },
+...
+```
+
+
+```
+> db.MyFirstCollection.find("bounding_box.type":"Polygon")
+```
+
 
 Filtering:
 
@@ -507,7 +546,7 @@ OR:
    }
 ).pretty()
 
-Mixing:
+Mixing up :
 
 ```
 db.MyFirstCollection.find(
@@ -519,6 +558,17 @@ db.MyFirstCollection.find(
    			]
    		}).pretty()
 ```
+
+
+Using regular expresions on fields, for instance to search documents where the name field
+``name`` cointais ``Wash``.
+
+
+```
+db.MyFirstCollection.find({"name": /.*Wash.*/})
+
+```
+
 
 ## Updating documents
 
@@ -558,7 +608,7 @@ db.MyFirstCollection.remove({'country':'United States'})
 
 ## Import external data
 
-Download this dataset in you Docker Home (copy this link: http://samplecsvs.s3.amazonaws.com/SacramentocrimeJanuary2006.csv):
+Download this dataset in your Docker Home (copy this link: http://samplecsvs.s3.amazonaws.com/SacramentocrimeJanuary2006.csv):
 
 [DataSet](http://samplecsvs.s3.amazonaws.com/SacramentocrimeJanuary2006.csv) 7585 rows and 794 KB)
 
@@ -571,8 +621,25 @@ curl -O http://samplecsvs.s3.amazonaws.com/SacramentocrimeJanuary2006.csv
 To import this file:
 
 ```
-mongoimport -d manuparra -c MyFirstCollection --type csv --file /tmp/SacramentocrimeJanuary2006.csv --headerline
+mongoimport -d manuparra -c <your collection> --type csv --file /tmp/SacramentocrimeJanuary2006.csv --headerline
 ```
+
+Try out the next queries on your collection:
+
+- Count number of thefts.
+- Count number of crimes per hour.
+
+
+
+## MongoDB Clients:
+
+- Command line tools: https://github.com/mongodb/mongo-tools
+- Use Mongo from PHP: https://github.com/mongodb/mongo-php-library
+- Use Mongo from NodeJS: https://mongodb.github.io/node-mongodb-native/
+- Perl to MongoDB: https://docs.mongodb.com/ecosystem/drivers/perl/
+- Full list of Mongo Clients (all languages): https://docs.mongodb.com/ecosystem/drivers/#drivers
+
+
 
 
 
