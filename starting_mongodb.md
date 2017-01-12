@@ -631,6 +631,8 @@ Use the next command:
 curl -O http://samplecsvs.s3.amazonaws.com/SacramentocrimeJanuary2006.csv
 ```
 
+or download from [github](./datasetmongodb/SacramentocrimeJanuary2006.csv).
+
 To import this file:
 
 ```
