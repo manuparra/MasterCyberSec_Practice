@@ -274,7 +274,9 @@ The ```command db.dropDatabase()`` is used to drop a existing database.
 
 DO NOT USE THIS COMMAND, WARNING:
 
-```db.dropDatabase()```
+```
+db.dropDatabase()
+```
 
 To kwnow the size of databases:
 
