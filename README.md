@@ -9,6 +9,8 @@ Manuel J. Parra Royón (manuelparra@decsai.ugr.es) & José. M. Benítez Sánchez
 Table of Contents
 =================
 
+[![Join the chat at https://gitter.im/MasterCyberSec_Practice/Lobby](https://badges.gitter.im/MasterCyberSec_Practice/Lobby.svg)](https://gitter.im/MasterCyberSec_Practice/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
    * [1. Environment of the practice](#environment-of-the-practice)
       * [Connecting to Docker Server UGR](#connecting-to-docker-server-ugr)
